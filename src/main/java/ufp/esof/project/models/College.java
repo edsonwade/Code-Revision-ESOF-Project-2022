@@ -1,5 +1,7 @@
 package ufp.esof.project.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,9 +12,11 @@ import java.util.Set;
 @Data
 @Entity
 @NoArgsConstructor
+@JsonPropertyOrder({"id", "name", "degrees"})
 public class College {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long Id;
 
     private String name;

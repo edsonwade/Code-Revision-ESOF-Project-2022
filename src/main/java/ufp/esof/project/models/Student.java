@@ -1,5 +1,7 @@
 package ufp.esof.project.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -12,10 +14,12 @@ import java.util.Set;
 @Entity
 @EqualsAndHashCode
 @NoArgsConstructor
+@JsonPropertyOrder({"id", "name", "appointments"})
 public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long Id;
 
     private String name;

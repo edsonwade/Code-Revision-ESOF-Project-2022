@@ -1,7 +1,8 @@
 package ufp.esof.project.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
@@ -9,19 +10,21 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
+import java.util.Objects;
 
 @Data
 @Entity
 @NoArgsConstructor
+@JsonPropertyOrder({"id", "dayOfWeek", "start", "end", "explainer"})
 public class Availability {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long Id;
 
     private DayOfWeek dayOfWeek;
@@ -46,18 +49,15 @@ public class Availability {
     }
 
     public boolean contains(Appointment appointment) {
-        DayOfWeek dayOfWeek = appointment.getStartTime().getDayOfWeek();
-        if (dayOfWeek.equals(this.dayOfWeek)) {
-            LocalTime appointmentStart = appointment.getStartTime().toLocalTime();
-            LocalTime appointmentEnd = appointment.getExpectedEndTime().toLocalTime();
-            return this.contains(appointmentStart, appointmentEnd);
-        }
-        return false;
+        var dayOfWeeks = appointment.getStartTime().getDayOfWeek();
+        if (!Objects.equals(dayOfWeeks, this.dayOfWeek)) return false;
+        var appointmentStart = appointment.getStartTime().toLocalTime();
+        var appointmentEnd = appointment.getExpectedEndTime().toLocalTime();
+        return this.contains(appointmentStart, appointmentEnd);
     }
 
     private boolean contains(LocalTime start, LocalTime end) {
-        return (this.start.isBefore(start) || this.start.equals(start))
-                &&
-                (this.end.isAfter(end) || this.end.equals(end));
+        return (this.start.isBefore(start) || start.equals(this.start))
+                && (this.end.isAfter(end) || end.equals(this.end));
     }
 }

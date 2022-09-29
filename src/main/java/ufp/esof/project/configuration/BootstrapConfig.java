@@ -1,4 +1,4 @@
-package ufp.esof.project;
+package ufp.esof.project.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +18,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import static ufp.esof.project.models.Language.*;
+
 @Component
 @Transactional
-public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
+public class BootstrapConfig implements ApplicationListener<ContextRefreshedEvent> {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -33,7 +35,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private AvailabilityRepo availabilityRepo;
 
     @Autowired
-    public Bootstrap(ExplainerRepo explainerRepo, CourseRepo courseRepo, AvailabilityRepo availabilityRepo, DegreeRepo degreeRepo, CollegeRepo collegeRepo, AppointmentRepo appointmentRepo, StudentRepo studentRepo) {
+    public BootstrapConfig(ExplainerRepo explainerRepo, CourseRepo courseRepo, AvailabilityRepo availabilityRepo, DegreeRepo degreeRepo, CollegeRepo collegeRepo, AppointmentRepo appointmentRepo, StudentRepo studentRepo) {
         this.explainerRepo = explainerRepo;
         this.courseRepo = courseRepo;
         this.studentRepo = studentRepo;
@@ -63,12 +65,12 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         courses.add(new Course("Bases de dados"));
 
         this.courseRepo.saveAll(courses);
-        Set<Language> languages = new HashSet<>();
 
-        Explainer explainer1 = new Explainer("Alexandro", "English");
-        Explainer explainer2 = new Explainer("Feliz", "Italian");
-        Explainer explainer3 = new Explainer("Borges Gouveia", "Spanish");
-        Explainer explainer4 = new Explainer("André", "French");
+        Explainer explainer1 = new Explainer("Alexandro", PORTUGUESE);
+        Explainer explainer2 = new Explainer("Feliz", ITALIAN);
+        Explainer explainer3 = new Explainer("Borges Gouveia", SPANISH);
+        Explainer explainer4 = new Explainer("André", ENGLISH);
+
 
         Set<Explainer> explainers = new HashSet<>();
         explainers.add(explainer1);
@@ -121,6 +123,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         students.add(new Student("João"));
         students.add(new Student("Vanilson"));
         students.add(new Student("Filipe"));
+        students.add(new Student("rui"));
+        students.add(new Student("mario"));
+        students.add(new Student("matilde"));
 
         this.studentRepo.saveAll(students);
     }

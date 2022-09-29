@@ -1,6 +1,8 @@
 package ufp.esof.project.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -8,7 +10,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,10 +17,12 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @NoArgsConstructor
+@JsonPropertyOrder({"id", "student", "explainer", "startTime", "expectedEndTime"})
 public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long id;
 
     @ManyToOne(cascade = {CascadeType.PERSIST})
@@ -56,16 +59,17 @@ public class Appointment {
 
 
     public boolean overlaps(Appointment other) {
-        return this.isBetween(other) || other.isBetween(this) || (this.startTime.equals(other.startTime) && this.expectedEndTime.equals(other.expectedEndTime));
+        return this.isBetween(other) || other.isBetween(this) ||
+                (this.startTime.equals(other.startTime) && this.expectedEndTime.equals(other.expectedEndTime));
     }
 
     private boolean isBetween(Appointment other) {
-        LocalDateTime appointmentStartTime = other.getStartTime();
-        LocalDateTime appointmentEndTime = other.getExpectedEndTime();
-        return this.isBetween(appointmentStartTime) || this.isBetween(appointmentEndTime);
+        var appointmentStartTime = other.getStartTime();
+        var appointmentEndTime = other.getExpectedEndTime();
+        return this.isBetweenDate(appointmentStartTime) || this.isBetweenDate(appointmentEndTime);
     }
 
-    private boolean isBetween(LocalDateTime timeToCheck) {
+    private boolean isBetweenDate(LocalDateTime timeToCheck) {
         return this.startTime.isBefore(timeToCheck) && this.expectedEndTime.isAfter(timeToCheck);
     }
 }
