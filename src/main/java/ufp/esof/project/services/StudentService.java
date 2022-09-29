@@ -11,6 +11,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
 @Service
 public class StudentService {
 
@@ -33,28 +36,28 @@ public class StudentService {
     }
 
     public boolean deleteById(Long id) {
-        Optional<Student> optionalStudent = this.findById(id);
+        var optionalStudent = this.findById(id);
         if (optionalStudent.isPresent()) {
-            if (optionalStudent.get().getAppointments().isEmpty()) {
-                this.studentRepo.deleteById(id);
-                return true;
-            }
-            return false;
+            if (!optionalStudent.get().getAppointments().isEmpty()) return false;
+            this.studentRepo.deleteById(id);
+            return true;
         }
         return false;
     }
 
     public Optional<Student> createStudent(Student student) {
-        Student newStudent = new Student();
-        Optional<Student> optionalStudent = this.validateAppointments(student, student);
-        if (optionalStudent.isPresent())
+        var newStudent = new Student();
+        var optionalStudent = this.validateAppointments(student, student);
+        if (optionalStudent.isPresent()) {
             newStudent = optionalStudent.get();
+        }
 
         optionalStudent = this.studentRepo.findByName(student.getName());
-        if (optionalStudent.isPresent())
-            return Optional.empty();
+        if (optionalStudent.isPresent()) {
+            return empty();
+        }
 
-        return Optional.of(this.studentRepo.save(newStudent));
+        return of(this.studentRepo.save(newStudent));
     }
 
     public Optional<Student> editStudent(Student currentStudent, Student student, Long id) {
@@ -65,25 +68,26 @@ public class StudentService {
 
         optionalStudent = this.studentRepo.findByName(student.getName());
         if (optionalStudent.isPresent() && (!optionalStudent.get().getId().equals(id)))
-            return Optional.empty();
+            return empty();
 
         newStudent.setName(student.getName());
 
-        return Optional.of(this.studentRepo.save(newStudent));
+        return of(this.studentRepo.save(newStudent));
     }
 
-    public Optional<Student> validateAppointments(Student currentStudent, Student student) {
+    private Optional<Student> validateAppointments(Student currentStudent, Student student) {
         Set<Appointment> newAppointments = new HashSet<>();
         for (Appointment appointment : student.getAppointments()) {
-            Optional<Appointment> optionalAppointment = this.appointmentRepo.findById(appointment.getId());
-            if (optionalAppointment.isEmpty())
-                return Optional.empty();
-            Appointment foundAppointment = optionalAppointment.get();
+            var optionalAppointment = this.appointmentRepo.findById(appointment.getId());
+            if (optionalAppointment.isEmpty()) {
+                return empty();
+            }
+            var foundAppointment = optionalAppointment.get();
             foundAppointment.setStudent(currentStudent);
             newAppointments.add(foundAppointment);
         }
 
         currentStudent.setAppointments(newAppointments);
-        return Optional.of(currentStudent);
+        return of(currentStudent);
     }
 }

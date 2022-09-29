@@ -1,16 +1,16 @@
 package ufp.esof.project.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import ufp.esof.project.exception.appointmentexception.InvalidAppointmentException;
 import ufp.esof.project.models.Appointment;
-import ufp.esof.project.models.Availability;
 import ufp.esof.project.models.Explainer;
 import ufp.esof.project.models.Student;
-import ufp.esof.project.repositories.*;
+import ufp.esof.project.repositories.AppointmentRepo;
+import ufp.esof.project.repositories.AvailabilityRepo;
+import ufp.esof.project.repositories.ExplainerRepo;
+import ufp.esof.project.repositories.StudentRepo;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -51,8 +51,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     @Override
-    public Optional<Appointment> findById(Long id) {
-        return this.appointmentRepo.findById(id);
+    public Appointment findAppointmentById(Long id) {
+        Optional<Appointment> appointment = this.appointmentRepo.findById(id);
+        if (appointment.isEmpty()) {
+            throw new InvalidAppointmentException(" the id " + id + " was not found");
+        }
+        return appointment.get();
     }
 
     @Override
@@ -65,22 +69,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         return studentRepo.findById(id);
     }
 
-    @Override
-    public Appointment save(Appointment Appointment) {
-        return this.appointmentRepo.save(Appointment);
-    }
-
-    @Override
-    public ResponseEntity<Appointment> saveAppointment(Appointment appointment) {
-        appointmentRepo.save(appointment);
-        return ResponseEntity.notFound().build();
-
-    }
+    // todo : fixed this error
+//    @Override
+//    public Appointment save(Appointment Appointment) {
+//        return this.appointmentRepo.save(Appointment);
+//    }
+//
+//    @Override
+//    public ResponseEntity<Appointment> saveAppointment(Appointment appointment) {
+//        appointmentRepo.save(appointment);
+//        return ResponseEntity.notFound().build();
+//
+//    }
 
     @Override
     public boolean deleteById(Long id) {
-        Optional<Appointment> appointmentOptional = this.findById(id);
-        if (appointmentOptional.isPresent()) {
+        Appointment appointmentOptional = this.findAppointmentById(id);
+        if (appointmentOptional.getId().equals(id)) {
             this.appointmentRepo.deleteById(id);
             return true;
         }

@@ -1,6 +1,7 @@
 package ufp.esof.project.services;
 
 import org.springframework.stereotype.Component;
+import ufp.esof.project.dto.ExplainerDto;
 import ufp.esof.project.filters.FilterObject;
 import ufp.esof.project.filters.explainerFilters.ExplainerFilterService;
 import ufp.esof.project.models.Course;
@@ -35,7 +36,6 @@ public class ExplainerServiceImpl implements ExplainerService {
     public Set<Explainer> getFilteredExplainer(FilterObject filterObject) {
         return explainerFilterService.filterExplainer(findAllExplainers(), filterObject);
 
-        // courseFilterService.filterCourses(getAllCourses(), filterObject);
     }
 
     public Optional<Explainer> findExplainerByName(String name) {
@@ -48,6 +48,16 @@ public class ExplainerServiceImpl implements ExplainerService {
             explainers.add(explainer);
         }
         return Collections.unmodifiableSet(explainers);
+    }
+
+    @Override
+    public Optional<Explainer> saveExplainer(ExplainerDto explainer) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Explainer> editExplainer(Explainer currentExplainer, ExplainerDto explainer, Long id) {
+        return Optional.empty();
     }
 
     public Optional<Explainer> saveExplainer(Explainer explainer) {

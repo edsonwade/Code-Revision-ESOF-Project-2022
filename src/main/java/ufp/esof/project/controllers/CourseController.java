@@ -1,6 +1,6 @@
 package ufp.esof.project.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +11,12 @@ import ufp.esof.project.services.CourseService;
 
 import java.util.Optional;
 
-@Controller
-@RequestMapping("/course")
+@RequestMapping(path = "/api/v1/course")
+@RequiredArgsConstructor
 public class CourseController {
 
-    private CourseService courseService;
+    private final CourseService courseService;
 
-    @Autowired
-    public CourseController(CourseService courseService) {
-        this.courseService = courseService;
-    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<Course>> getAllCourses() {
