@@ -18,8 +18,6 @@ public class ExplainerLanguageFilter implements ExplainerFilter {
     @Override
     public Set<Explainer> filter(Set<Explainer> explainers) {
         if (languages == null) return explainers;
-
-
         return explainers.stream().filter(explainer -> explainer.getLanguage() == this.languages).collect(Collectors.toSet());
 
 
@@ -27,4 +25,3 @@ public class ExplainerLanguageFilter implements ExplainerFilter {
 }
 
 
-//explainer -> explainer.getLanguages() == this.languages).collect(Collectors.toSet());

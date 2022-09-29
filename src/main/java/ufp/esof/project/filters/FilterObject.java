@@ -9,7 +9,7 @@ import java.time.LocalTime;
 @Data
 public class FilterObject {
 
-    private Language language;
+    private Language lang;
     private LocalTime startTime;
     private LocalTime endTime;
     private DayOfWeek day;

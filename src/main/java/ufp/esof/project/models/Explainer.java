@@ -1,7 +1,8 @@
 package ufp.esof.project.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,13 +15,19 @@ import java.util.Set;
 
 @Data
 @Entity
+@Table(name = "tb_explainer")
 @NoArgsConstructor
+@JsonPropertyOrder({"id", "name", "language"})
 public class Explainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long Id;
 
     private String name;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "language")
+    private Language language;
 
 
     @OneToMany(mappedBy = "explainer", cascade = CascadeType.ALL)
@@ -31,12 +38,6 @@ public class Explainer {
     @ToString.Exclude
     @ManyToMany(cascade = CascadeType.PERSIST)
     private Set<Course> courses = new HashSet<>();
-
-    @EqualsAndHashCode.Exclude
-    @JsonIgnore
-    @ToString.Exclude
-    @OneToMany(cascade = CascadeType.MERGE, orphanRemoval = true, mappedBy = "explainer")
-    private Set<Language> language = new HashSet<>();
 
 
     @EqualsAndHashCode.Exclude
@@ -49,11 +50,8 @@ public class Explainer {
         this.setName(name);
     }
 
-    public Explainer(String name, String languages) {
-        {
-            this.setName(name);
-            this.setLanguage(language);
-        }
+    public Explainer(String name, Language language) {
+        this.name = name;
         this.language = language;
     }
 
@@ -66,18 +64,10 @@ public class Explainer {
         this.courses.add(course);
     }
 
-    public Language getLanguageExpaliner() {
-        for (Language language : this.getLanguage()) {
-            return language;
-        }
-        return null;
-    }
-
 
     // add language. a um professor
     public void addLanguage(Language languages) {
         language.add(languages);
-        languages.setExplainer(this);
     }
 
 
@@ -85,24 +75,18 @@ public class Explainer {
     public boolean addAppointmentToExplainer(Appointment appointment) {
         if (work(appointment.getStartTime()) && disponivel(appointment.getStartTime())) {
             appointments.add(appointment);
-
-
             appointment.setExplainer(this);
             appointment.setExplainer(this);
 
             return true;
-        } else {
-            return false;
-        }
+        } else return false;
     }
 
     private boolean work(LocalDateTime dataAppointment) {
-        for (Availability horarioActual : this.getAvailabilities()) {
-            if (horarioActual.getDayOfWeek().equals(dataAppointment.getDayOfWeek()) && horarioActual.getStart().isBefore(dataAppointment.toLocalTime()) && horarioActual.getEnd().isAfter(dataAppointment.toLocalTime())) {
-                return true;
-            }
-        }
-        return false;
+        return this.getAvailabilities().stream().
+                anyMatch(horarioActual -> horarioActual.getDayOfWeek().equals(dataAppointment.getDayOfWeek()) &&
+                        horarioActual.getStart().isBefore(dataAppointment.toLocalTime()) &&
+                        horarioActual.getEnd().isAfter(dataAppointment.toLocalTime()));
     }
 
 
@@ -110,17 +94,23 @@ public class Explainer {
         for (Appointment appointmentExplainer : this.appointments) {
             if (appointmentExplainer.getStartTime().getDayOfWeek().equals(dataAppointment.getDayOfWeek())) {
                 if (appointmentExplainer.getStartTime().equals(dataAppointment)) {
-                    return false;
+                    isAfterDateAppointment(appointmentExplainer, dataAppointment);
                 }
-                if (appointmentExplainer.getExpectedEndTime().toLocalTime().isAfter(dataAppointment.toLocalTime())) {
-                    return false;
-                }
-                if (appointmentExplainer.getStartTime().toLocalTime().isBefore(dataAppointment.toLocalTime().plusMinutes(30))) {
-                    return false;
-                }
+                return false;
             }
+            isBeforeDateAppointment(appointmentExplainer, dataAppointment);
         }
         return true;
     }
 
+
+    private boolean isBeforeDateAppointment(Appointment appointmentExplainer, LocalDateTime dataAppointment) {
+        return !appointmentExplainer.getStartTime().toLocalTime()
+                .isBefore(dataAppointment.toLocalTime().plusMinutes(30));
+    }
+
+    private boolean isAfterDateAppointment(Appointment appointmentExplainer, LocalDateTime dataAppointment) {
+        return !appointmentExplainer.getExpectedEndTime().toLocalTime().isAfter(dataAppointment.toLocalTime());
+
+    }
 }

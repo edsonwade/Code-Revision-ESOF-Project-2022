@@ -1,27 +1,25 @@
 package ufp.esof.project.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.CascadeType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @Entity
 @NoArgsConstructor
+@JsonPropertyOrder({"id", "name", "explainers", "degree"})
 public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long Id;
 
     private String name;
@@ -42,7 +40,5 @@ public class Course {
         this.explainers.add(explainer);
     }
 
-    public void removeExplainer(Explainer explainer) {
-        this.explainers.remove(explainer);
-    }
+
 }

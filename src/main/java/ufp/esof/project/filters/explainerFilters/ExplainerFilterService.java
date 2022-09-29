@@ -16,7 +16,7 @@ public class ExplainerFilterService {
         FilterI<Explainer> hourEndFilter = new ExplainerEndTimeFilter(filterObject.getEndTime());
         FilterI<Explainer> hourEndAndHourStartFilter = new AndFilter<>(hourStartFilter, hourEndFilter);
 
-        FilterI<Explainer> languageExplainerFilter = new ExplainerLanguageFilter(filterObject.getLanguage());
+        FilterI<Explainer> languageExplainerFilter = new ExplainerLanguageFilter(filterObject.getLang());
         FilterI<Explainer> languageAndhourStartAndhourEndAndDay = new AndFilter<>(hourEndAndHourStartFilter, languageExplainerFilter);
         return languageAndhourStartAndhourEndAndDay.filter(explainers);
     }
