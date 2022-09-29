@@ -1,26 +1,27 @@
 package ufp.esof.project.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ufp.esof.project.dto.AvailabilityDto;
+import ufp.esof.project.exception.availabilityexception.AvailabilityNotCreatedException;
+import ufp.esof.project.exception.availabilityexception.AvailabilityNotDeletedException;
+import ufp.esof.project.exception.availabilityexception.AvailabilityNotEditedException;
 import ufp.esof.project.models.Availability;
 import ufp.esof.project.services.AvailabilityService;
 
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/availability")
+@RequestMapping(path = "/api/v1/availability")
+@RequiredArgsConstructor
 public class AvailabilityController {
 
-    private AvailabilityService availabilityService;
+    private final AvailabilityService availabilityService;
 
-    @Autowired
-    public AvailabilityController(AvailabilityService availabilityService) {
-        this.availabilityService = availabilityService;
-    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<Availability>> getAllAvailabilities() {
@@ -44,15 +45,15 @@ public class AvailabilityController {
         if (this.availabilityService.deleteById(id))
             return ResponseEntity.ok("Availability deleted successfully!");
 
-        throw new AvailabilityNotDeletedException(id);
+        throw new AvailabilityNotDeletedException("Availability not edited" + id);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Availability> createAvailability(@RequestBody Availability availability) {
+    public ResponseEntity<Availability> createAvailability(@RequestBody AvailabilityDto availability) {
         Optional<Availability> optionalAvailability = this.availabilityService.createAvailability(availability);
         if (optionalAvailability.isPresent())
             return ResponseEntity.ok(optionalAvailability.get());
-        throw new AvailabilityNotCreatedException(availability.getId());
+        throw new AvailabilityNotCreatedException(" not created " + availability.getId());
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -61,11 +62,11 @@ public class AvailabilityController {
         if (optionalAvailability.isEmpty())
             throw new InvalidAvailabilityException(id);
 
-        optionalAvailability = this.availabilityService.editAvailability(optionalAvailability.get(), availability, id);
+        optionalAvailability = this.availabilityService.editAvailability(availability, id);
         if (optionalAvailability.isPresent())
             return ResponseEntity.ok(optionalAvailability.get());
 
-        throw new AvailabilityNotEditedException(id);
+        throw new AvailabilityNotEditedException("Availability not edited " + id);
     }
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid Availability")
@@ -75,24 +76,5 @@ public class AvailabilityController {
         }
     }
 
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Availability not deleted")
-    public static class AvailabilityNotDeletedException extends RuntimeException {
-        public AvailabilityNotDeletedException(Long id) {
-            super("The availability with id \"" + id + "\" was not deleted");
-        }
-    }
 
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Availability not created")
-    public static class AvailabilityNotCreatedException extends RuntimeException {
-        public AvailabilityNotCreatedException(Long id) {
-            super("The availability with id \"" + id + "\" was not created");
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Availability not edited")
-    public static class AvailabilityNotEditedException extends RuntimeException {
-        public AvailabilityNotEditedException(Long id) {
-            super("The availability with id \"" + id + "\" was not edited");
-        }
-    }
 }

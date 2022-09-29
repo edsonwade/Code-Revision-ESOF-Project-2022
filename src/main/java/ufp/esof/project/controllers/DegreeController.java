@@ -1,6 +1,6 @@
 package ufp.esof.project.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +12,12 @@ import ufp.esof.project.services.DegreeService;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/degree")
+@RequestMapping(path = "/api/v1/degree")
+@RequiredArgsConstructor
 public class DegreeController {
 
-    private DegreeService degreeService;
+    private final DegreeService degreeService;
 
-    @Autowired
-    public DegreeController(DegreeService degreeService) {
-        this.degreeService = degreeService;
-    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<Degree>> getAllDegrees() {

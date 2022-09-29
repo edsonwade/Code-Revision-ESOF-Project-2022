@@ -2,6 +2,7 @@ package ufp.esof.project.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ufp.esof.project.dto.AvailabilityDto;
 import ufp.esof.project.models.Availability;
 import ufp.esof.project.models.Explainer;
 import ufp.esof.project.repositories.AvailabilityRepo;
@@ -39,7 +40,7 @@ public class AvailabilityService {
         return false;
     }
 
-    public Optional<Availability> createAvailability(Availability availability) {
+    public Optional<Availability> createAvailability(AvailabilityDto availability) {
         Availability newAvailability = new Availability();
 
         Optional<Explainer> optionalExplainer = this.explainerRepo.findByName(availability.getExplainer().getName());
@@ -57,7 +58,7 @@ public class AvailabilityService {
         return Optional.of(this.availabilityRepo.save(newAvailability));
     }
 
-    public Optional<Availability> editAvailability(Availability currentAvailability, Availability availability, Long id) {
+    public Optional<Availability> editAvailability(Availability availability, Long id) {
         Availability newAvailability;
 
         Optional<Availability> optionalAvailability = this.availabilityRepo.findById(id);

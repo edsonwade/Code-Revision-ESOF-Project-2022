@@ -1,14 +1,14 @@
 package ufp.esof.project.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import ufp.esof.project.dto.ExplainerDto;
 import ufp.esof.project.filters.FilterObject;
 import ufp.esof.project.models.Explainer;
 import ufp.esof.project.services.ExplainerService;
@@ -17,26 +17,20 @@ import java.util.Optional;
 import java.util.Set;
 
 @Controller
-@RestController
-@RequestMapping("/explainer")
+@RequestMapping(path = "/api/v1/explainer")
+@RequiredArgsConstructor
 public class ExplainerController {
 
 
     private Logger logger = LoggerFactory.getLogger(ExplainerController.class);
 
-    private ExplainerService explainerServiceImpl;
+    private final ExplainerService explainerServiceImpl;
 
-    @Autowired
-    public ExplainerController(@Qualifier("explainerServiceImpl") ExplainerService explainerServiceImpl) {
-        this.explainerServiceImpl = explainerServiceImpl;
-    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Set<Explainer> getAllExplainer(@ModelAttribute FilterObject filterObject) {
-        logger.info(filterObject.toString());
         return explainerServiceImpl.getFilteredExplainer(filterObject);
-
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -47,16 +41,18 @@ public class ExplainerController {
         throw new InvalidExplainerException(id);
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Explainer> createExplainer(@RequestBody Explainer explainer) {
+    @PostMapping(value = "/create",
+            produces = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Explainer> createExplainer(@RequestBody ExplainerDto explainer) {
         Optional<Explainer> explainerOptional = this.explainerServiceImpl.saveExplainer(explainer);
         if (explainerOptional.isPresent())
             return ResponseEntity.ok(explainerOptional.get());
         throw new ExplainerNotCreatedException(explainer.getName());
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Explainer> updateExplainer(@RequestBody Explainer explainer, @PathVariable("id") Long id) {
+    @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Explainer> updateExplainer(@RequestBody ExplainerDto explainer, @PathVariable("id") Long id) {
         Optional<Explainer> explainerOptional = explainerServiceImpl.getById(id);
         if (explainerOptional.isEmpty())
             throw new InvalidExplainerException(id);
@@ -68,7 +64,7 @@ public class ExplainerController {
         throw new ExplainerNotEditedException(id);
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteExplainer(@PathVariable("id") Long id) {
         boolean res = this.explainerServiceImpl.deleteById(id);
         Optional<Explainer> optionalExplainer = this.explainerServiceImpl.getById(id);

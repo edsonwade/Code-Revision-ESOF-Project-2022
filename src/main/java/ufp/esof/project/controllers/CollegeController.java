@@ -1,10 +1,9 @@
 package ufp.esof.project.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ufp.esof.project.models.College;
 import ufp.esof.project.services.CollegeService;
@@ -12,17 +11,13 @@ import ufp.esof.project.services.CollegeService;
 import java.util.Optional;
 
 
-@Controller
 @RestController
-@RequestMapping("/college")
+@RequestMapping(path = "/api/v1/college")
+@RequiredArgsConstructor
 public class CollegeController {
 
-    private CollegeService collegeService;
+    private final CollegeService collegeService;
 
-    @Autowired
-    public CollegeController(CollegeService collegeService) {
-        this.collegeService = collegeService;
-    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<College>> getAllColleges() {

@@ -1,6 +1,6 @@
 package ufp.esof.project.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +12,12 @@ import ufp.esof.project.services.StudentService;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/student")
+@RequestMapping(path = "/api/v1/student")
+@RequiredArgsConstructor
 public class StudentController {
 
-    private StudentService studentService;
+    private final StudentService studentService;
 
-    @Autowired
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Iterable<Student>> getAllStudents() {
@@ -29,13 +26,13 @@ public class StudentController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Student> getStudentById(@PathVariable("id") Long id) {
-        Optional<Student> optionalStudent = this.studentService.findById(id);
+        var optionalStudent = this.studentService.findById(id);
         if (optionalStudent.isPresent())
             return ResponseEntity.ok(optionalStudent.get());
         throw new InvalidStudentException(id);
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteStudent(@PathVariable("id") Long id) {
         Optional<Student> optionalStudent = this.studentService.findById(id);
         if (optionalStudent.isEmpty())
@@ -54,7 +51,7 @@ public class StudentController {
         throw new StudentNotCreatedException(student.getName());
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Student> editStudent(@PathVariable("id") Long id, @RequestBody Student student) {
         Optional<Student> optionalStudent = this.studentService.findById(id);
         if (optionalStudent.isEmpty())
