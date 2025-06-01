@@ -1,75 +1,124 @@
 package ufp.esof.project.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import jakarta.persistence.GenerationType;
+import lombok.*;
 
-import javax.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
+
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
+@Table(name = "appointments")
 @JsonPropertyOrder({"id", "student", "explainer", "startTime", "expectedEndTime"})
 public class Appointment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("id")
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST})
-    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name = "student_id")
     @JsonBackReference(value = "student")
     private Student student;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST})
-    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    @JoinColumn(name = "explainer_id")
     @JsonBackReference(value = "explainer")
     private Explainer explainer;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime expectedEndTime;
 
-    public Appointment(LocalDateTime startTime, LocalDateTime end) {
+    public Appointment(LocalDateTime startTime, LocalDateTime expectedEndTime) {
+        validateTimeRange(startTime, expectedEndTime);
         this.startTime = startTime;
-        this.expectedEndTime = end;
+        this.expectedEndTime = expectedEndTime;
     }
 
-
-    public Appointment(Long id) {
-        this.setId(id);
+    private void validateTimeRange(LocalDateTime start, LocalDateTime end) {
+        if (start == null || end == null) {
+            throw new IllegalArgumentException("Start and end times cannot be null");
+        }
+        if (end.isBefore(start)) {
+            throw new IllegalArgumentException("End time cannot be before start time");
+        }
     }
 
-    public Appointment(Explainer explainer) {
-        this.setExplainer(explainer);
+    /**
+     * Checks if this appointment has a time conflict with another appointment.
+     * A conflict occurs when appointments overlap or have identical time slots.
+     *
+     * @param other the appointment to check for conflicts with
+     * @return true if there is a time conflict, false otherwise
+     * @throws IllegalArgumentException if other is null
+     */
+    public boolean hasTimeConflict(Appointment other) {
+        return isTimeOverlapping(other) ||
+                areTimesEqual(other) ||
+                other.isTimeOverlapping(this);
     }
 
-
-    public boolean overlaps(Appointment other) {
-        return this.isBetween(other) || other.isBetween(this) ||
-                (this.startTime.equals(other.startTime) && this.expectedEndTime.equals(other.expectedEndTime));
+    /**
+     * Checks if this appointment's time period overlaps with another appointment.
+     *
+     * @param other the appointment to check for overlap
+     * @return true if the appointments overlap, false otherwise
+     */
+    private boolean isTimeOverlapping(Appointment other) {
+        return isTimeWithinRange(other.startTime) ||
+                isTimeWithinRange(other.expectedEndTime);
     }
 
-    private boolean isBetween(Appointment other) {
-        var appointmentStartTime = other.getStartTime();
-        var appointmentEndTime = other.getExpectedEndTime();
-        return this.isBetweenDate(appointmentStartTime) || this.isBetweenDate(appointmentEndTime);
+    /**
+     * Checks if a given time falls within this appointment's time range.
+     *
+     * @param timeToCheck the time to check
+     * @return true if the time is within the appointment's range, false otherwise
+     */
+    private boolean isTimeWithinRange(LocalDateTime timeToCheck) {
+        return startTime.isBefore(timeToCheck) &&
+                expectedEndTime.isAfter(timeToCheck);
     }
 
-    private boolean isBetweenDate(LocalDateTime timeToCheck) {
-        return this.startTime.isBefore(timeToCheck) && this.expectedEndTime.isAfter(timeToCheck);
+    /**
+     * Checks if this appointment has exactly the same start and end times as another appointment.
+     *
+     * @param other the appointment to compare times with
+     * @return true if start and end times are equal, false otherwise
+     */
+    private boolean areTimesEqual(Appointment other) {
+        return startTime.equals(other.startTime) &&
+                expectedEndTime.equals(other.expectedEndTime);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Appointment that = (Appointment) o;
+        return Objects.equals(id, that.id) && Objects.equals(student, that.student) && Objects.equals(explainer, that.explainer) && Objects.equals(startTime, that.startTime) && Objects.equals(expectedEndTime, that.expectedEndTime);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(id);
+        result = 31 * result + Objects.hashCode(student);
+        result = 31 * result + Objects.hashCode(explainer);
+        result = 31 * result + Objects.hashCode(startTime);
+        result = 31 * result + Objects.hashCode(expectedEndTime);
+        return result;
     }
 }

@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5436/shop-test-db}
+    username: ${POSTGRES_TEST_USERNAME}
+    password: ${POSTGRES_TEST_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    user: ${POSTGRES_TEST_USERNAME}
+    password: ${POSTGRES_TEST_PASSWORD}
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    clean-disabled: false  # Allow database cleanup in test environment
+
+server:
+  port: 8088
+

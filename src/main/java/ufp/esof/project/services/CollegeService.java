@@ -7,16 +7,14 @@ import ufp.esof.project.models.Degree;
 import ufp.esof.project.repositories.CollegeRepo;
 import ufp.esof.project.repositories.DegreeRepo;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class CollegeService {
 
-    private CollegeRepo collegeRepo;
+    private final CollegeRepo collegeRepo;
 
-    private DegreeRepo degreeRepo;
+    private final DegreeRepo degreeRepo;
 
     @Autowired
     public CollegeService(CollegeRepo collegeRepo, DegreeRepo degreeRepo) {

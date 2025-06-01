@@ -1,5 +1,31 @@
+spring:
+  application:
+    name: university-management-system
+  profiles:
+    active: dev
 management:
   endpoints:
     web:
       exposure:
-        include: "prometheus,health,info,metrics"
+        include: prometheus, info, metrics, health
+  info:
+    env:
+      enabled: true
+  # Jackson Configuration
+jackson:
+   time-zone: UTC
+   date-format: yyyy-MM-dd HH:mm:ss
+
+server:
+  port: 8082
+  error:
+    include-stacktrace: never
+    include-message: always
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+  # Increase the logging level for Spring Security config to remove the warning
+logging:
+  level:
+    org.springframework.security.config.annotation.authentication.configuration: ERROR

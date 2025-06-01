@@ -1,14 +1,13 @@
 package ufp.esof.project.dto;
 
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Availability;
 import ufp.esof.project.models.Course;
 import ufp.esof.project.models.Language;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+
 import java.util.HashSet;
 import java.util.Set;
 
