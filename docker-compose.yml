@@ -1,8 +1,8 @@
 services:
-    # Mini shop management system for development
-  shop-management-system-dev:
+  # University management system for development
+  university-management-system-dev:
     image: edsonwade126/university-management-system:latest
-    container_name: shop-management-dev
+    container_name: university-management-dev
     ports:
       - "8087:8087"
     depends_on:
@@ -19,7 +19,7 @@ services:
     env_file:
       - .env
     networks:
-      - shop-management-net
+      - university-management-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8087/actuator/health" ]
       interval: 10s
@@ -28,10 +28,10 @@ services:
       start_period: 70s
     restart: on-failure
 
-  # Mini shop management system for Docker
-  shop-management-system-docker:
+  # University management system for Docker
+  university-management-system-docker:
     image: edsonwade126/university-management-system:latest
-    container_name: shop-management-docker
+    container_name: university-management-docker
     ports:
       - "8085:8085"
     depends_on:
@@ -46,7 +46,7 @@ services:
     env_file:
       - .env
     networks:
-      - shop-management-net
+      - university-management-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8085/actuator/health" ]
       interval: 10s
@@ -69,7 +69,7 @@ services:
     volumes:
       - postgres_replica_prod_data:/var/lib/postgresql/data
     networks:
-      - shop-management-net
+      - university-management-net
     command: >
       postgres -c 'wal_level=replica'
                -c 'max_wal_senders=10'
@@ -98,7 +98,7 @@ services:
     volumes:
       - postgres-dev-data:/var/lib/postgresql/data
     networks:
-      - shop-management-net
+      - university-management-net
     command: |
       postgres -c 'wal_keep_size=64MB'
     env_file:
@@ -122,7 +122,7 @@ services:
     volumes:
       - postgres_docker_data:/var/lib/postgresql/data
     networks:
-      - shop-management-net
+      - university-management-net
     command: |
       postgres -c 'wal_level=replica' -c 'max_wal_senders=10' -c 'hot_standby=on'
     env_file:
@@ -145,7 +145,7 @@ services:
       POSTGRES_USER: ${POSTGRES_TEST_USERNAME}
       POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD}
     networks:
-      - shop-management-net
+      - university-management-net
     volumes:
       - postgres-test-data:/var/lib/postgresql/data
     healthcheck:
@@ -173,7 +173,7 @@ services:
       - .env
     command: [ "mongod", "--wiredTigerCacheSizeGB", "1" ]
     networks:
-      - shop-management-net
+      - university-management-net
 
     # MongoDB Express for managing MongoDB
   mongo-express:
@@ -190,7 +190,7 @@ services:
     ports:
       - '8081:8081'
     networks:
-      - shop-management-net
+      - university-management-net
     depends_on:
       - mongodb
 
@@ -202,7 +202,7 @@ services:
     ports:
       - "6380:6379"
     networks:
-      - shop-management-net
+      - university-management-net
     command: [ "redis-server", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru" ]
     restart: unless-stopped
 
@@ -219,10 +219,10 @@ services:
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     networks:
-      - shop-management-net
+      - university-management-net
     depends_on:
-      - shop-management-system-dev
-      - shop-management-system-docker
+      - university-management-system-dev
+      - university-management-system-docker
 
     # Grafana for visualizing metrics
   grafana:
@@ -231,12 +231,12 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./grafana:/etc/grafana/provisioning/datasources
+      - ./src/main/resources/grafana:/etc/grafana/provisioning/datasources
     depends_on:
       - prometheus
     restart: unless-stopped
     networks:
-      - shop-management-net
+      - university-management-net
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=grafana
@@ -262,5 +262,5 @@ volumes:
 
     # Custom network for the application
 networks:
-  shop-management-net:
+  university-management-net:
     driver: bridge

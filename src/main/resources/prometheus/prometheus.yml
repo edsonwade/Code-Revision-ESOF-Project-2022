@@ -1,34 +1,29 @@
 # Global configuration for Prometheus
 global:
-  scrape_interval: 15s     # Default scrape interval for all jobs (every 15 seconds)
-  scrape_timeout: 10s     # Default scrape timeout for all jobs (10 seconds)
-  evaluation_interval: 15s # Default evaluation interval for rules (every 15 seconds)
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
 
-# Prometheus configuration file
 alerting:
   alertmanagers:
     - static_configs:
-        - targets: []
+        - targets: [ ]
       scheme: http
       timeout: 10s
       api_version: v1
 
-# List of scrape configurations
 scrape_configs:
-  # Scrape configuration for Prometheus itself
   - job_name: 'prometheus'
     honor_timestamps: true
     scrape_interval: 15s
     scrape_timeout: 10s
-    # Override the global scrape interval to 5 seconds
     static_configs:
-        - targets: [ 'localhost:9090' ] # Prometheus server target (self-monitoring)
+      - targets: [ 'localhost:9090' ]
 
-  # Scrape configuration for Spring Boot application exposing metrics
+
   - job_name: 'spring-boot-actuator'
-    metrics_path: '/actuator/prometheus' # Metrics endpoint for Spring Boot
-    scrape_interval: 15s                  # Override the global scrape interval to 5 seconds
-    scrape_timeout: 10s                   # Override the global scrape timeout to 5 seconds
-    honor_timestamps: true
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 15s
+    scrape_timeout: 10s
     static_configs:
-      - targets: [ 'host.docker.internal:8080' ] # Target Spring Boot app running on Docker
+      - targets: [ 'university-management-docker:8085' ]# Changed port to match your app

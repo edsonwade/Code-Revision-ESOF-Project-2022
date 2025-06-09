@@ -4,10 +4,19 @@ spring:
   profiles:
     active: dev
 management:
+  metrics:
+    enable:
+      process.cpu: false      # Disable only problematic system metrics
+      system.cpu: false       # while keeping other metrics
+      process.files: false
+      process.uptime: false
   endpoints:
     web:
       exposure:
-        include: prometheus, info, metrics, health
+        include: health, metrics, prometheus, info
+  endpoint:
+    health:
+      show-details: always
   info:
     env:
       enabled: true
@@ -21,11 +30,3 @@ server:
   error:
     include-stacktrace: never
     include-message: always
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-
-  # Increase the logging level for Spring Security config to remove the warning
-logging:
-  level:
-    org.springframework.security.config.annotation.authentication.configuration: ERROR
