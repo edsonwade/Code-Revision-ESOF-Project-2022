@@ -1,5 +1,7 @@
+/*
 package ufp.esof.project.configuration;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,7 @@ import org.springframework.stereotype.Component;
 import ufp.esof.project.models.*;
 import ufp.esof.project.repositories.*;
 
-import javax.transaction.Transactional;
+
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,15 +26,15 @@ import static ufp.esof.project.models.Language.*;
 @Transactional
 public class BootstrapConfig implements ApplicationListener<ContextRefreshedEvent> {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger logger = LoggerFactory.getLogger(BootstrapConfig.class);
 
-    private ExplainerRepo explainerRepo;
-    private CourseRepo courseRepo;
-    private AppointmentRepo appointmentRepo;
-    private StudentRepo studentRepo;
-    private CollegeRepo collegeRepo;
-    private DegreeRepo degreeRepo;
-    private AvailabilityRepo availabilityRepo;
+    private final ExplainerRepo explainerRepo;
+    private final CourseRepo courseRepo;
+    private final AppointmentRepo appointmentRepo;
+    private final StudentRepo studentRepo;
+    private final CollegeRepo collegeRepo;
+    private final DegreeRepo degreeRepo;
+    private final AvailabilityRepo availabilityRepo;
 
     @Autowired
     public BootstrapConfig(ExplainerRepo explainerRepo, CourseRepo courseRepo, AvailabilityRepo availabilityRepo, DegreeRepo degreeRepo, CollegeRepo collegeRepo, AppointmentRepo appointmentRepo, StudentRepo studentRepo) {
@@ -130,3 +132,4 @@ public class BootstrapConfig implements ApplicationListener<ContextRefreshedEven
         this.studentRepo.saveAll(students);
     }
 }
+*/

@@ -1,21 +1,56 @@
 #########################################
-# Packaged spring boot app using maven
+# Build Stage: Build the application using Maven
 #########################################
-#FROM openjdk:16-jdk-alpine as as builder
-FROM maven:3.6-openjdk-8-slim as builder
+FROM maven:3.8.1-openjdk-17 AS builder
 
-RUN mkdir -p /app
 WORKDIR /app
-ADD pom.xml .
+
+# First, copy only the pom.xml to leverage Docker cache for dependencies
+COPY pom.xml .
+
 RUN mvn dependency:go-offline -B
-COPY ./src ./src
-RUN mvn package -DskipTests
 
+# Copy the rest of the source code and build the application
+COPY src src
+RUN mvn clean package -DskipTests
 
-FROM openjdk:8-jdk-alpine as runner
+#########################################
+# Package Stage: Create the final container image
+#########################################
+FROM openjdk:17
 
-COPY --from=builder /app/target/*.jar /app.jar
+# Define build arguments
+ARG BUILD_DATE
+ARG BUILD_USER
+ARG GIT_COMMIT
 
+# Add labels with proper quoting
+LABEL org.label-schema.build-date="${BUILD_DATE}" \
+      org.label-schema.vcs-ref="${GIT_COMMIT}" \
+      org.label-schema.built-by="${BUILD_USER}"
+
+# Create a non-root user
+RUN groupadd -r spring && useradd -r -g spring spring
+
+# Set environment variables
+ENV SERVER_PORT=8080
+# Set the Spring profile to prod by default
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Set working directory and ownership
+WORKDIR /app
+COPY --from=builder /app/target/*.jar /app/project-0.0.1-SNAPSHOT.jar
+RUN chown -R spring:spring /app
+
+# Switch to non-root user
+USER spring
+
+# Expose the port that the application will run on
 EXPOSE ${SERVER_PORT}
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+# Health check (using curl instead of wget as it's more commonly available)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:${SERVER_PORT}/actuator/health || exit 1
+
+# Specify the command to run your application
+ENTRYPOINT ["java", "-jar", "/app/project-0.0.1-SNAPSHOT.jar"]

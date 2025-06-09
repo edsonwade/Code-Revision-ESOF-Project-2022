@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres_docker:5432/${POSTGRES_DOCKER_DB}
+    username: ${POSTGRES_DOCKER_USER}
+    password: ${POSTGRES_DOCKER_PASSWORD}
+
+  jpa:
+    show-sql: true
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        generate_statistics: true
+
+management:
+  metrics:
+    enable:
+      process: false
+      system: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+
+
+
+server:
+  error:
+    include-message: always
+  port: 8080
+
+
+
+  info:
+    env:
+      enabled: true

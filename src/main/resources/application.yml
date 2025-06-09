@@ -1,5 +1,32 @@
+spring:
+  application:
+    name: university-management-system
+  profiles:
+    active: dev
 management:
+  metrics:
+    enable:
+      process.cpu: false      # Disable only problematic system metrics
+      system.cpu: false       # while keeping other metrics
+      process.files: false
+      process.uptime: false
   endpoints:
     web:
       exposure:
-        include: "prometheus,health,info,metrics"
+        include: health, metrics, prometheus, info
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+  # Jackson Configuration
+jackson:
+   time-zone: UTC
+   date-format: yyyy-MM-dd HH:mm:ss
+
+server:
+  port: 8082
+  error:
+    include-stacktrace: never
+    include-message: always
