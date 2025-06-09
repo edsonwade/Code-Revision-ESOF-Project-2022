@@ -129,8 +129,11 @@ jobs:
       # Step 10: Verify Docker Image
       - name: Verify Docker Image
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/university-shop-management-system:latest
-          docker inspect ${{ secrets.DOCKER_USERNAME }}/university-shop-management-system:latest
+          # Step 10: Verify Docker Image
+      - name: Verify Docker Image
+        run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/university-management-system:latest
+          docker inspect ${{ secrets.DOCKER_USERNAME }}/university-management-system:latest
 
       # Step 11: Tag Release if on main
       - name: Create Release Tag
