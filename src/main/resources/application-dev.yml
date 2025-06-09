@@ -12,7 +12,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        generate_statistics: true
 
     # Redis configuration
     redis:
@@ -26,13 +26,15 @@ spring:
     mongodb:
       uri: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@localhost:27017/${MONGO_DATABASE}?authSource=admin
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, metrics, prometheus, info
-  endpoint:
-    health:
-      show-details: always
+
+  flyway:
+    user: ${POSTGRES_DEV_USER}
+    password: ${POSTGRES_DEV_PASSWORD}
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+    #clean-disabled: false  # Allow database cleanup in test environment
+
 server:
   port: 8082

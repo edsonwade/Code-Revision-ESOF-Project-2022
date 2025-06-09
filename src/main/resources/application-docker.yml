@@ -12,7 +12,21 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        generate_statistics: true
+
+management:
+  metrics:
+    enable:
+      process: false
+      system: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+
 
 
 server:
@@ -20,11 +34,7 @@ server:
     include-message: always
   port: 8080
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, metrics, prometheus,info
+
 
   info:
     env:
