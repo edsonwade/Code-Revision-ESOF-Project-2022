@@ -18,9 +18,7 @@ target/
 *.iws
 *.iml
 *.ipr
-.env
-*.env
-/.env
+
 /docs
 endpoints/
 /endpoints
@@ -28,6 +26,11 @@ endpoints/
 # Ignore log files
 logs/
 *.log
+
+### Ignorar arquivos de ambiente ###
+.env
+*.env
+/.env
 
 ### NetBeans ###
 /nbproject/private/

@@ -73,7 +73,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.4</version> <!-- Use the latest stable version -->
+            <version>42.7.7</version> <!-- Use the latest stable version -->
             <scope>runtime</scope>
         </dependency>
         <dependency>
