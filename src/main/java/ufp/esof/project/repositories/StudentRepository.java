@@ -2,12 +2,11 @@ package ufp.esof.project.repositories;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import ufp.esof.project.models.Appointment;
+import ufp.esof.project.models.Student;
 
 import java.util.Optional;
 
 @Repository
-public interface AppointmentRepo extends CrudRepository<Appointment, Long> {
-    Optional<Appointment> findById(long id);
+public interface StudentRepository extends CrudRepository<Student, Long> {
+    Optional<Student> findByName(String name);
 }
-

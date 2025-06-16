@@ -6,10 +6,10 @@ import ufp.esof.project.exception.appointmentexception.InvalidAppointmentExcepti
 import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Explainer;
 import ufp.esof.project.models.Student;
-import ufp.esof.project.repositories.AppointmentRepo;
-import ufp.esof.project.repositories.AvailabilityRepo;
-import ufp.esof.project.repositories.ExplainerRepo;
-import ufp.esof.project.repositories.StudentRepo;
+import ufp.esof.project.repositories.AppointmentRepository;
+import ufp.esof.project.repositories.AvailabilityRepository;
+import ufp.esof.project.repositories.ExplainerRepository;
+import ufp.esof.project.repositories.StudentRepository;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -18,27 +18,27 @@ import java.util.Set;
 @Component
 public class AppointmentServiceImpl implements AppointmentService {
 
-    private AppointmentRepo appointmentRepo;
+    private final AppointmentRepository appointmentRepository;
 
-    private ExplainerRepo explainerRepo;
+    private final ExplainerRepository explainerRepository;
 
-    private StudentRepo studentRepo;
+    private final StudentRepository studentRepository;
 
-    private AvailabilityRepo availabilityRepo;
+    private final AvailabilityRepository availabilityRepository;
 
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepo appointmentRepo, ExplainerRepo explainerRepo, StudentRepo studentRepo, AvailabilityRepo availabilityRepo) {
-        this.appointmentRepo = appointmentRepo;
-        this.explainerRepo = explainerRepo;
-        this.studentRepo = studentRepo;
-        this.availabilityRepo = availabilityRepo;
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, ExplainerRepository explainerRepository, StudentRepository studentRepository, AvailabilityRepository availabilityRepository) {
+        this.appointmentRepository = appointmentRepository;
+        this.explainerRepository = explainerRepository;
+        this.studentRepository = studentRepository;
+        this.availabilityRepository = availabilityRepository;
     }
 
 
     @Override
     public Set<Appointment> getSetAppointment() {
         Set<Appointment> appointments = new HashSet<>();
-        for (Appointment appointment : this.appointmentRepo.findAll()) {
+        for (Appointment appointment : this.appointmentRepository.findAll()) {
             appointments.add(appointment);
         }
         return appointments;
@@ -46,13 +46,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Iterable<Appointment> findAll() {
-        return appointmentRepo.findAll();
+        return appointmentRepository.findAll();
     }
 
 
     @Override
     public Appointment findAppointmentById(Long id) {
-        Optional<Appointment> appointment = this.appointmentRepo.findById(id);
+        Optional<Appointment> appointment = this.appointmentRepository.findById(id);
         if (appointment.isEmpty()) {
             throw new InvalidAppointmentException(" the id " + id + " was not found");
         }
@@ -61,12 +61,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Optional<Explainer> findByName(String nameExplainer) {
-        return explainerRepo.findByName(nameExplainer);
+        return explainerRepository.findByName(nameExplainer);
     }
 
     @Override
     public Optional<Student> findStudentById(Long id) {
-        return studentRepo.findById(id);
+        return studentRepository.findById(id);
     }
 
     // todo : fixed this error
@@ -83,10 +83,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 //    }
 
     @Override
-    public boolean deleteById(Long id) {
-        Appointment appointmentOptional = this.findAppointmentById(id);
-        if (appointmentOptional.getId().equals(id)) {
-            this.appointmentRepo.deleteById(id);
+    public boolean deleteAppointmentById(Long id) {
+        Appointment appointment = this.findAppointmentById(id);
+        if (appointment.getId().equals(id)) {
+            this.appointmentRepository.deleteById(id);
             return true;
         }
         return false;

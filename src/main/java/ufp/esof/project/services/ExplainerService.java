@@ -1,13 +1,11 @@
 package ufp.esof.project.services;
 
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import ufp.esof.project.dto.ExplainerDto;
-import ufp.esof.project.filters.FilterObject;
 import ufp.esof.project.models.Explainer;
-
-import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Repository
@@ -15,7 +13,7 @@ public interface ExplainerService {
 
     Optional<Explainer> getById(long id);
 
-    Set<Explainer> getFilteredExplainer(FilterObject filterObject);
+    Set<Explainer> getFilteredExplainer(Object filterObject);
 
     Optional<Explainer> findExplainerByName(String name);
 

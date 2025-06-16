@@ -28,16 +28,16 @@ public class BootstrapConfig implements ApplicationListener<ContextRefreshedEven
 
     private static final Logger logger = LoggerFactory.getLogger(BootstrapConfig.class);
 
-    private final ExplainerRepo explainerRepo;
+    private final ExplainerRepository explainerRepo;
     private final CourseRepo courseRepo;
-    private final AppointmentRepo appointmentRepo;
-    private final StudentRepo studentRepo;
+    private final AppointmentRepository appointmentRepo;
+    private final StudentRepository studentRepo;
     private final CollegeRepo collegeRepo;
     private final DegreeRepo degreeRepo;
-    private final AvailabilityRepo availabilityRepo;
+    private final AvailabilityRepository availabilityRepo;
 
     @Autowired
-    public BootstrapConfig(ExplainerRepo explainerRepo, CourseRepo courseRepo, AvailabilityRepo availabilityRepo, DegreeRepo degreeRepo, CollegeRepo collegeRepo, AppointmentRepo appointmentRepo, StudentRepo studentRepo) {
+    public BootstrapConfig(ExplainerRepository explainerRepo, CourseRepo courseRepo, AvailabilityRepository availabilityRepo, DegreeRepo degreeRepo, CollegeRepo collegeRepo, AppointmentRepository appointmentRepo, StudentRepository studentRepo) {
         this.explainerRepo = explainerRepo;
         this.courseRepo = courseRepo;
         this.studentRepo = studentRepo;

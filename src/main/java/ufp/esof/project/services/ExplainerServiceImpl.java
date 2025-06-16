@@ -1,50 +1,42 @@
 package ufp.esof.project.services;
 
-import org.springframework.stereotype.Component;
-import ufp.esof.project.dto.ExplainerDto;
-import ufp.esof.project.filters.FilterObject;
-import ufp.esof.project.filters.explainerFilters.ExplainerFilterService;
-import ufp.esof.project.models.Course;
-import ufp.esof.project.models.Explainer;
-import ufp.esof.project.repositories.CourseRepo;
-import ufp.esof.project.repositories.ExplainerRepo;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import org.springframework.stereotype.*;
+import ufp.esof.project.dto.*;
+import ufp.esof.project.models.*;
+import ufp.esof.project.repositories.*;
 
-@Component
+import java.util.*;
+
+@Service
 public class ExplainerServiceImpl implements ExplainerService {
 
-    private ExplainerFilterService explainerFilterService;
 
-    private ExplainerRepo explainerRepo;
+    private final ExplainerRepository explainerRepository;
 
-    private CourseRepo courseRepo;
+    private final CourseRepo courseRepo;
 
-    public ExplainerServiceImpl(ExplainerFilterService explainerFilterService, ExplainerRepo explainerRepo, CourseRepo courseRepo) {
-        this.explainerRepo = explainerRepo;
+    public ExplainerServiceImpl(ExplainerRepository explainerRepository, CourseRepo courseRepo) {
+        this.explainerRepository = explainerRepository;
         this.courseRepo = courseRepo;
-        this.explainerFilterService = explainerFilterService;
     }
 
     public Optional<Explainer> getById(long id) {
-        return explainerRepo.findById(id);
+        return explainerRepository.findById(id);
     }
 
-    public Set<Explainer> getFilteredExplainer(FilterObject filterObject) {
-        return explainerFilterService.filterExplainer(findAllExplainers(), filterObject);
+    public Set<Explainer> getFilteredExplainer(Object filterObject) {
+        return null;
 
     }
 
     public Optional<Explainer> findExplainerByName(String name) {
-        return this.explainerRepo.findByName(name);
+        return this.explainerRepository.findByName(name);
     }
 
     public Set<Explainer> findAllExplainers() {
         Set<Explainer> explainers = new HashSet<>();
-        for (Explainer explainer : this.explainerRepo.findAll()) {
+        for (Explainer explainer : this.explainerRepository.findAll()) {
             explainers.add(explainer);
         }
         return Collections.unmodifiableSet(explainers);
@@ -70,7 +62,7 @@ public class ExplainerServiceImpl implements ExplainerService {
         if (explainerOptional.isPresent())
             newExplainer = explainerOptional.get();
 
-        return Optional.of(this.explainerRepo.save(newExplainer));
+        return Optional.of(this.explainerRepository.save(newExplainer));
     }
 
     public Optional<Explainer> editExplainer(Explainer currentExplainer, Explainer explainer, Long id) {
@@ -79,19 +71,19 @@ public class ExplainerServiceImpl implements ExplainerService {
         if (optionalExplainer.isPresent())
             newExplainer = optionalExplainer.get();
 
-        optionalExplainer = this.explainerRepo.findByName(explainer.getName());
+        optionalExplainer = this.explainerRepository.findByName(explainer.getName());
         if (optionalExplainer.isPresent() && (!optionalExplainer.get().getId().equals(id)))
             return Optional.empty();
 
         newExplainer.setName(explainer.getName());
 
-        return Optional.of(this.explainerRepo.save(newExplainer));
+        return Optional.of(this.explainerRepository.save(newExplainer));
     }
 
     public boolean deleteById(Long id) {
         Optional<Explainer> optionalExplainer = this.getById(id);
         if (optionalExplainer.isPresent()) {
-            this.explainerRepo.deleteById(id);
+            this.explainerRepository.deleteById(id);
             return true;
         }
         return false;

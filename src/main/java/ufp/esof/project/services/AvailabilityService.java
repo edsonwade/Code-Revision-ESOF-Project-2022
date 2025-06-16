@@ -5,36 +5,36 @@ import org.springframework.stereotype.Service;
 import ufp.esof.project.dto.AvailabilityDto;
 import ufp.esof.project.models.Availability;
 import ufp.esof.project.models.Explainer;
-import ufp.esof.project.repositories.AvailabilityRepo;
-import ufp.esof.project.repositories.ExplainerRepo;
+import ufp.esof.project.repositories.AvailabilityRepository;
+import ufp.esof.project.repositories.ExplainerRepository;
 
 import java.util.Optional;
 
 @Service
 public class AvailabilityService {
 
-    private AvailabilityRepo availabilityRepo;
+    private AvailabilityRepository availabilityRepository;
 
-    private ExplainerRepo explainerRepo;
+    private ExplainerRepository explainerRepository;
 
     @Autowired
-    public AvailabilityService(AvailabilityRepo availabilityRepo, ExplainerRepo explainerRepo) {
-        this.availabilityRepo = availabilityRepo;
-        this.explainerRepo = explainerRepo;
+    public AvailabilityService(AvailabilityRepository availabilityRepository, ExplainerRepository explainerRepository) {
+        this.availabilityRepository = availabilityRepository;
+        this.explainerRepository = explainerRepository;
     }
 
     public Iterable<Availability> findAll() {
-        return this.availabilityRepo.findAll();
+        return this.availabilityRepository.findAll();
     }
 
     public Optional<Availability> findById(Long id) {
-        return this.availabilityRepo.findById(id);
+        return this.availabilityRepository.findById(id);
     }
 
     public boolean deleteById(Long id) {
         Optional<Availability> optionalAvailability = this.findById(id);
         if (optionalAvailability.isPresent()) {
-            this.availabilityRepo.deleteById(id);
+            this.availabilityRepository.deleteById(id);
             return true;
         }
         return false;
@@ -43,7 +43,7 @@ public class AvailabilityService {
     public Optional<Availability> createAvailability(AvailabilityDto availability) {
         Availability newAvailability = new Availability();
 
-        Optional<Explainer> optionalExplainer = this.explainerRepo.findByName(availability.getExplainer().getName());
+        Optional<Explainer> optionalExplainer = this.explainerRepository.findByName(availability.getExplainer().getName());
         if (optionalExplainer.isEmpty())
             return Optional.empty();
 
@@ -55,19 +55,19 @@ public class AvailabilityService {
         newAvailability.setEnd(availability.getEnd());
         newAvailability.setDayOfWeek(availability.getDayOfWeek());
 
-        return Optional.of(this.availabilityRepo.save(newAvailability));
+        return Optional.of(this.availabilityRepository.save(newAvailability));
     }
 
     public Optional<Availability> editAvailability(Availability availability, Long id) {
         Availability newAvailability;
 
-        Optional<Availability> optionalAvailability = this.availabilityRepo.findById(id);
+        Optional<Availability> optionalAvailability = this.availabilityRepository.findById(id);
         if (optionalAvailability.isEmpty())
             return Optional.empty();
 
         newAvailability = optionalAvailability.get();
 
-        Optional<Explainer> optionalExplainer = this.explainerRepo.findByName(availability.getExplainer().getName());
+        Optional<Explainer> optionalExplainer = this.explainerRepository.findByName(availability.getExplainer().getName());
         if (optionalExplainer.isEmpty())
             return Optional.empty();
 
@@ -79,7 +79,7 @@ public class AvailabilityService {
         newAvailability.setEnd(availability.getEnd());
         newAvailability.setDayOfWeek(availability.getDayOfWeek());
 
-        return Optional.of(this.availabilityRepo.save(newAvailability));
+        return Optional.of(this.availabilityRepository.save(newAvailability));
     }
 
 }

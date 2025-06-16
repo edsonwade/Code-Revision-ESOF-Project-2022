@@ -1,93 +1,79 @@
 package ufp.esof.project.services;
 
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ufp.esof.project.exception.DuplicateStudentException;
+import ufp.esof.project.exception.StudentNotFoundException;
 import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Student;
-import ufp.esof.project.repositories.AppointmentRepo;
-import ufp.esof.project.repositories.StudentRepo;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
+import ufp.esof.project.repositories.StudentRepository;
 
 @Service
 public class StudentService {
 
-    private StudentRepo studentRepo;
-
-    private AppointmentRepo appointmentRepo;
+    private final StudentRepository studentRepository;
+    private final StudentAppointmentService studentAppointmentService;
 
     @Autowired
-    public StudentService(StudentRepo studentRepo, AppointmentRepo appointmentRepo) {
-        this.studentRepo = studentRepo;
-        this.appointmentRepo = appointmentRepo;
+    public StudentService(StudentRepository studentRepository, StudentAppointmentService studentAppointmentService) {
+        this.studentRepository = studentRepository;
+        this.studentAppointmentService = studentAppointmentService;
     }
 
-    public Iterable<Student> findAll() {
-        return this.studentRepo.findAll();
+    public Iterable<Student> getAllStudents() {
+        return studentRepository.findAll();
     }
 
-    public Optional<Student> findById(Long id) {
-        return this.studentRepo.findById(id);
+    public Student getStudentById(Long id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException("Student with ID " + id + " not found"));
     }
 
-    public boolean deleteById(Long id) {
-        var optionalStudent = this.findById(id);
-        if (optionalStudent.isPresent()) {
-            if (!optionalStudent.get().getAppointments().isEmpty()) return false;
-            this.studentRepo.deleteById(id);
-            return true;
-        }
-        return false;
+    public Student getStudentByName(String name) {
+        return studentRepository.findByName(name)
+                .orElseThrow(() -> new StudentNotFoundException("Student with NAME " + name + " not found"));
     }
 
-    public Optional<Student> createStudent(Student student) {
-        var newStudent = new Student();
-        var optionalStudent = this.validateAppointments(student, student);
-        if (optionalStudent.isPresent()) {
-            newStudent = optionalStudent.get();
+    public Student createStudent(Student studentInput) {
+        if (studentRepository.findByName(studentInput.getName()).isPresent()) {
+            throw new DuplicateStudentException("Student with name '" + studentInput.getName() + "' already exists");
         }
 
-        optionalStudent = this.studentRepo.findByName(student.getName());
-        if (optionalStudent.isPresent()) {
-            return empty();
-        }
-
-        return of(this.studentRepo.save(newStudent));
-    }
-
-    public Optional<Student> editStudent(Student currentStudent, Student student, Long id) {
         Student newStudent = new Student();
-        Optional<Student> optionalStudent = this.validateAppointments(currentStudent, student);
-        if (optionalStudent.isPresent())
-            newStudent = optionalStudent.get();
+        newStudent.setName(studentInput.getName());
 
-        optionalStudent = this.studentRepo.findByName(student.getName());
-        if (optionalStudent.isPresent() && (!optionalStudent.get().getId().equals(id)))
-            return empty();
+        Set<Appointment> appointments = studentAppointmentService.validateAndAttachAppointments(newStudent, studentInput.getAppointments());
+        newStudent.setAppointments(appointments);
 
-        newStudent.setName(student.getName());
-
-        return of(this.studentRepo.save(newStudent));
+        return studentRepository.save(newStudent);
     }
 
-    private Optional<Student> validateAppointments(Student currentStudent, Student student) {
-        Set<Appointment> newAppointments = new HashSet<>();
-        for (Appointment appointment : student.getAppointments()) {
-            var optionalAppointment = this.appointmentRepo.findById(appointment.getId());
-            if (optionalAppointment.isEmpty()) {
-                return empty();
-            }
-            var foundAppointment = optionalAppointment.get();
-            foundAppointment.setStudent(currentStudent);
-            newAppointments.add(foundAppointment);
+    public Student updateStudent(Long id, Student updatedData) {
+        Student existingStudent = getStudentById(id);
+        if (studentRepository.findByName(updatedData.getName())
+                .filter(s -> !s.getId().equals(id))
+                .isPresent()) {
+            throw new DuplicateStudentException("Another student with name '" + updatedData.getName() + "' already exists");
         }
-
-        currentStudent.setAppointments(newAppointments);
-        return of(currentStudent);
+        existingStudent.setName(updatedData.getName());
+        existingStudent.setEmail(updatedData.getEmail());
+        Set<Appointment> updatedAppointments = studentAppointmentService.validateAndAttachAppointments(existingStudent, updatedData.getAppointments());
+        existingStudent.setAppointments(updatedAppointments);
+        return studentRepository.save(existingStudent);
     }
+
+    public boolean deleteStudentById(Long id) {
+        Student student = getStudentById(id);
+        if (!student.getAppointments().isEmpty()) {
+            return false;
+        }
+        studentRepository.deleteById(id);
+        return true;
+    }
+
+
 }
+
+
+
