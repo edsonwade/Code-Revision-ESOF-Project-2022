@@ -1,0 +1,19 @@
+/**
+ * Author: vanilson muhongo
+ * Date:16/06/2025
+ * Time:14:03
+ * Version:
+ */
+
+package ufp.esof.project.exception;
+
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class StudentNotFoundException extends RuntimeException {
+    public StudentNotFoundException(String message) {
+        super(message);
+    }
+}

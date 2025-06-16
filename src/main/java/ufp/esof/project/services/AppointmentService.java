@@ -29,6 +29,6 @@ public interface AppointmentService {
 //
 //    ResponseEntity<AppointmentDto> saveAppointment(AppointmentDto Appointment);
 
-    boolean deleteById(Long id);
+    boolean deleteAppointmentById(Long id);
 
 }

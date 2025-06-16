@@ -57,7 +57,7 @@ public class AppointmentController {
     public ResponseEntity<String> deleteAppointment(@PathVariable("id") Long id) {
         var appointmentOptional = appointmentService.findAppointmentById(id);
         if (appointmentOptional.getId().equals(id)) {
-            this.appointmentService.deleteById(id);
+            this.appointmentService.deleteAppointmentById(id);
             return ResponseEntity.ok("Appointment Deleted Successfully");
         }
         throw new InvalidAppointmentException("The appointment with id \"" + id + "\" does not exist");

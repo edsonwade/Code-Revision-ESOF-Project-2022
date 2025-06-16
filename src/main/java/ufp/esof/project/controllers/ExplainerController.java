@@ -6,30 +6,36 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import ufp.esof.project.dto.ExplainerDto;
-import ufp.esof.project.filters.FilterObject;
 import ufp.esof.project.models.Explainer;
-import ufp.esof.project.services.ExplainerService;
 
 import java.util.Optional;
 import java.util.Set;
+import ufp.esof.project.services.ExplainerServiceImpl;
 
-@Controller
+@RestController
 @RequestMapping(path = "/api/v1/explainer")
 @RequiredArgsConstructor
 public class ExplainerController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ExplainerController.class);
 
-    private Logger logger = LoggerFactory.getLogger(ExplainerController.class);
-
-    private final ExplainerService explainerServiceImpl;
+    private final ExplainerServiceImpl explainerServiceImpl;
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    Set<Explainer> getAllExplainer(@ModelAttribute FilterObject filterObject) {
+    public
+    Set<Explainer> getAllExplainer( Object filterObject) {
+        logger.info("all explainers");
         return explainerServiceImpl.getFilteredExplainer(filterObject);
     }
 
