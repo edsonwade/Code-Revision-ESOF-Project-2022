@@ -1,13 +1,13 @@
 package ufp.esof.project.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import ufp.esof.project.models.College;
 import ufp.esof.project.models.Degree;
-import ufp.esof.project.repositories.CollegeRepo;
-import ufp.esof.project.repositories.DegreeRepo;
-
-import java.util.*;
+import ufp.esof.project.repository.CollegeRepo;
+import ufp.esof.project.repository.DegreeRepo;
 
 @Service
 public class CollegeService {
@@ -16,7 +16,6 @@ public class CollegeService {
 
     private final DegreeRepo degreeRepo;
 
-    @Autowired
     public CollegeService(CollegeRepo collegeRepo, DegreeRepo degreeRepo) {
         this.collegeRepo = collegeRepo;
         this.degreeRepo = degreeRepo;

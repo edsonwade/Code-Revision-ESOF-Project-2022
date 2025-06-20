@@ -1,23 +1,21 @@
 package ufp.esof.project.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import ufp.esof.project.dto.AvailabilityDto;
 import ufp.esof.project.models.Availability;
 import ufp.esof.project.models.Explainer;
-import ufp.esof.project.repositories.AvailabilityRepository;
-import ufp.esof.project.repositories.ExplainerRepository;
-
-import java.util.Optional;
+import ufp.esof.project.repository.AvailabilityRepository;
+import ufp.esof.project.repository.ExplainerRepository;
 
 @Service
 public class AvailabilityService {
 
-    private AvailabilityRepository availabilityRepository;
+    private final AvailabilityRepository availabilityRepository;
 
-    private ExplainerRepository explainerRepository;
+    private final ExplainerRepository explainerRepository;
 
-    @Autowired
+
     public AvailabilityService(AvailabilityRepository availabilityRepository, ExplainerRepository explainerRepository) {
         this.availabilityRepository = availabilityRepository;
         this.explainerRepository = explainerRepository;

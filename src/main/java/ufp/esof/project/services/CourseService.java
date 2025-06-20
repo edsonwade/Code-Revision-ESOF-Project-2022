@@ -1,24 +1,21 @@
 package ufp.esof.project.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.stereotype.Service;
 import ufp.esof.project.models.Course;
 import ufp.esof.project.models.Degree;
 import ufp.esof.project.models.Explainer;
-import ufp.esof.project.repositories.CourseRepo;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import ufp.esof.project.repository.CourseRepo;
 
 @Service
 public class CourseService {
 
-    private CourseRepo courseRepo;
-    private DegreeService degreeService;
-    private ExplainerService explainerService;
+    private final CourseRepo courseRepo;
+    private final DegreeService degreeService;
+    private final ExplainerService explainerService;
 
-    @Autowired
     public CourseService(CourseRepo courseRepo, DegreeService degreeService, ExplainerService explainerService) {
         this.courseRepo = courseRepo;
         this.degreeService = degreeService;

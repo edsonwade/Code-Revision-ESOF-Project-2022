@@ -1,21 +1,20 @@
 package ufp.esof.project.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import jakarta.transaction.Transactional;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import org.springframework.stereotype.Service;
 import ufp.esof.project.exception.appointmentexception.InvalidAppointmentException;
 import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Explainer;
 import ufp.esof.project.models.Student;
-import ufp.esof.project.repositories.AppointmentRepository;
-import ufp.esof.project.repositories.AvailabilityRepository;
-import ufp.esof.project.repositories.ExplainerRepository;
-import ufp.esof.project.repositories.StudentRepository;
+import ufp.esof.project.repository.AppointmentRepository;
+import ufp.esof.project.repository.ExplainerRepository;
+import ufp.esof.project.repository.StudentRepository;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
-@Component
+@Service
+@Transactional
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
@@ -24,24 +23,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final StudentRepository studentRepository;
 
-    private final AvailabilityRepository availabilityRepository;
-
-    @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, ExplainerRepository explainerRepository, StudentRepository studentRepository, AvailabilityRepository availabilityRepository) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, ExplainerRepository explainerRepository, StudentRepository studentRepository) {
         this.appointmentRepository = appointmentRepository;
         this.explainerRepository = explainerRepository;
         this.studentRepository = studentRepository;
-        this.availabilityRepository = availabilityRepository;
     }
 
 
     @Override
     public Set<Appointment> getSetAppointment() {
-        Set<Appointment> appointments = new HashSet<>();
-        for (Appointment appointment : this.appointmentRepository.findAll()) {
-            appointments.add(appointment);
-        }
-        return appointments;
+        return new HashSet<>(this.appointmentRepository.findAll());
     }
 
     @Override

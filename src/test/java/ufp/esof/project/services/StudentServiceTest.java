@@ -14,7 +14,7 @@ import ufp.esof.project.exception.DuplicateStudentException;
 import ufp.esof.project.exception.StudentNotFoundException;
 import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Student;
-import ufp.esof.project.repositories.StudentRepository;
+import ufp.esof.project.repository.StudentRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;

@@ -1,4 +1,4 @@
-package ufp.esof.project.repositories;
+package ufp.esof.project.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

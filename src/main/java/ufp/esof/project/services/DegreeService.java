@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import ufp.esof.project.models.College;
 import ufp.esof.project.models.Course;
 import ufp.esof.project.models.Degree;
-import ufp.esof.project.repositories.CourseRepo;
-import ufp.esof.project.repositories.DegreeRepo;
+import ufp.esof.project.repository.CourseRepo;
+import ufp.esof.project.repository.DegreeRepo;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -15,11 +15,11 @@ import java.util.Set;
 @Service
 public class DegreeService {
 
-    private DegreeRepo degreeRepo;
-    private CourseRepo courseRepo;
-    private CollegeService collegeService;
+    private final DegreeRepo degreeRepo;
+    private final CourseRepo courseRepo;
+    private final CollegeService collegeService;
 
-    @Autowired
+
     public DegreeService(DegreeRepo degreeRepo, CollegeService collegeService, CourseRepo courseRepo) {
         this.degreeRepo = degreeRepo;
         this.collegeService = collegeService;
