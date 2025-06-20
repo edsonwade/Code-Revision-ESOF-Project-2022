@@ -15,12 +15,15 @@
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 //import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.boot.test.mock.mockito.MockBean;
 //import org.springframework.http.MediaType;
+//import org.springframework.test.context.ActiveProfiles;
 //import org.springframework.test.web.servlet.MockMvc;
 //import ufp.esof.project.models.Appointment;
 //import ufp.esof.project.models.Student;
-//import ufp.esof.project.repositories.AppointmentRepository;
-//import ufp.esof.project.repositories.StudentRepository;
+//import ufp.esof.project.repository.AppointmentRepository;
+//import ufp.esof.project.repository.ExplainerRepository;
+//import ufp.esof.project.repository.StudentRepository;
 //
 //import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -31,6 +34,7 @@
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
+//@ActiveProfiles("test")
 //@SpringBootTest
 //@AutoConfigureMockMvc
 //@Transactional
@@ -48,10 +52,16 @@
 //    @Autowired
 //    private AppointmentRepository appointmentRepository;
 //
+//    @Autowired
+//    private ExplainerRepository explainerRepository;
+//
+//
+//
 //    @BeforeEach
 //    void setup() {
 //        appointmentRepository.deleteAll();
 //        studentRepository.deleteAll();
+//        explainerRepository.deleteAll();
 //    }
 //
 //    @Test

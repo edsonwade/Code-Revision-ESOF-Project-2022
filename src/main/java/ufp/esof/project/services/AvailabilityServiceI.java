@@ -5,7 +5,7 @@ import ufp.esof.project.models.Availability;
 
 import java.util.Optional;
 
-@Service
+
 public interface AvailabilityServiceI {
     Iterable<Availability> findAll();
 

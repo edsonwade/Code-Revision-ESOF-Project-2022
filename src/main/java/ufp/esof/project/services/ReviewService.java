@@ -18,10 +18,10 @@ import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Explainer;
 import ufp.esof.project.models.Review;
 import ufp.esof.project.models.Student;
-import ufp.esof.project.repositories.AppointmentRepository;
-import ufp.esof.project.repositories.ExplainerRepository;
-import ufp.esof.project.repositories.ReviewRepository;
-import ufp.esof.project.repositories.StudentRepository;
+import ufp.esof.project.repository.AppointmentRepository;
+import ufp.esof.project.repository.ExplainerRepository;
+import ufp.esof.project.repository.ReviewRepository;
+import ufp.esof.project.repository.StudentRepository;
 
 @Service
 public class ReviewService {

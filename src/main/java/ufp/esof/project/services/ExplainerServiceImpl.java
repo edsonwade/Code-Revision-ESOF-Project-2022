@@ -4,9 +4,10 @@ package ufp.esof.project.services;
 import org.springframework.stereotype.*;
 import ufp.esof.project.dto.*;
 import ufp.esof.project.models.*;
-import ufp.esof.project.repositories.*;
 
 import java.util.*;
+import ufp.esof.project.repository.CourseRepo;
+import ufp.esof.project.repository.ExplainerRepository;
 
 @Service
 public class ExplainerServiceImpl implements ExplainerService {

@@ -1,4 +1,4 @@
-package ufp.esof.project.repositories;
+package ufp.esof.project.repository;
 
 import java.time.DayOfWeek;
 import java.util.List;

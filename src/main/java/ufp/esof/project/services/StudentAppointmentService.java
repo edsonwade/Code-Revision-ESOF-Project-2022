@@ -8,13 +8,12 @@
 package ufp.esof.project.services;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 import org.springframework.stereotype.Component;
 import ufp.esof.project.exception.AppointmentNotFoundException;
 import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Student;
-import ufp.esof.project.repositories.AppointmentRepository;
+import ufp.esof.project.repository.AppointmentRepository;
 @Component
 public class StudentAppointmentService {
 
