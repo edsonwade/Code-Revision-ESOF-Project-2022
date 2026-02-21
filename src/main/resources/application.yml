@@ -1,32 +1,143 @@
 spring:
   application:
-    name: university-management-system
-  profiles:
-    active: dev
+    name: university-application
+
+  # PostgreSQL Configuration (Primary Database)
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/university_db}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      max-lifetime: 1200000
+      pool-name: OrderServiceHikariCP
+      auto-commit: true
+      connection-test-query: SELECT 1
+
+    # PostgreSQL Replica (Read Replica)
+  replica:
+    url: jdbc:postgresql://localhost:5435/university_db
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+        use_sql_comments: false
+      time_zone: UTC
+    open-in-view: false
+
+  # MongoDB Configuration
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/university_db?replicaSet=rs0
+      database: university_db
+      auto-index-creation: true
+
+  # Redis Configuration
+  redis:
+    data:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1
+        shutdown-timeout: 100ms
+
+  # Flyway Configuration
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    sql-migration-prefix: V
+    sql-migration-suffixes: .sql
+    validate-on-migrate: true
+
+  # Mail Configuration (optional)
+  mail:
+    host: localhost
+    port: 1025
+    username: ""
+    password: ""
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+          from: "Mini Market <no-reply@minimarket.com>"
+
+# Actuator & Prometheus Configuration
 management:
-  metrics:
-    enable:
-      process.cpu: false      # Disable only problematic system metrics
-      system.cpu: false       # while keeping other metrics
-      process.files: false
-      process.uptime: false
   endpoints:
     web:
       exposure:
-        include: health, metrics, prometheus, info
+        include: health,info,prometheus,metrics
+      base-path: /api/actuator
   endpoint:
     health:
-      show-details: always
-  info:
-    env:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    db:
       enabled: true
-  # Jackson Configuration
-jackson:
-   time-zone: UTC
-   date-format: yyyy-MM-dd HH:mm:ss
+    redis:
+      enabled: true
+    mongo:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
-server:
-  port: 8082
-  error:
-    include-stacktrace: never
-    include-message: always
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    code.with.vanilson.orders_service: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+  file:
+    path: ./logs
+
+# Swagger/OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /api/v3/api-docs
+  swagger-ui:
+    path: /api/swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  # JWT Configuration
+app:
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration: 86400000 # 1 day
