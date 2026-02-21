@@ -6,10 +6,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Objects;
+import ufp.esof.project.models.base.AuditableEntity;
 
 @Getter
 @Setter
@@ -18,7 +20,8 @@ import java.util.Objects;
 @Table(name = "availabilities")
 @JsonPropertyOrder({"id", "dayOfWeek", "start", "end", "explainer"})
 @NoArgsConstructor
-public class Availability {
+@Where(clause = "deleted_at IS NULL")
+public class Availability extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

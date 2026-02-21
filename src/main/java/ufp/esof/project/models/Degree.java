@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import org.hibernate.annotations.Where;
+import ufp.esof.project.models.base.AuditableEntity;
 
 
 @Entity
@@ -16,7 +18,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "degrees")
-public class Degree {
+@Where(clause = "deleted_at IS NULL")
+public class Degree extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

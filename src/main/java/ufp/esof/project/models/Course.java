@@ -6,10 +6,12 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import ufp.esof.project.models.base.AuditableEntity;
 
 @Entity
 @NoArgsConstructor
@@ -17,7 +19,8 @@ import java.util.Set;
 @Setter
 @Getter
 @Table(name = "courses")
-public class Course {
+@Where(clause = "deleted_at IS NULL")
+public class Course extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -7,10 +7,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.GenerationType;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import ufp.esof.project.models.base.AuditableEntity;
+import ufp.esof.project.models.enums.AppointmentStatus;
 
 
 @Entity
@@ -18,8 +21,9 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 @Table(name = "appointments")
-@JsonPropertyOrder({"id", "student", "explainer", "startTime", "expectedEndTime"})
-public class Appointment {
+@JsonPropertyOrder({"id", "student", "explainer", "course", "startTime", "expectedEndTime", "status"})
+@Where(clause = "deleted_at IS NULL")
+public class Appointment extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,6 +37,14 @@ public class Appointment {
     @JoinColumn(name = "explainer_id")
     @JsonBackReference(value = "explainer")
     private Explainer explainer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status = AppointmentStatus.SCHEDULED;
 
     @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import java.util.*;
+import ufp.esof.project.models.base.AuditableEntity;
 
 @Entity
 @NoArgsConstructor
@@ -15,13 +17,21 @@ import java.util.*;
 @Setter
 @JsonPropertyOrder({"id", "name", "degrees"})
 @Table(name = "colleges")
-public class College {
+@Where(clause = "deleted_at IS NULL")
+public class College extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private Long organizationId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organization_id", insertable = false, updatable = false)
+    private Organization organization;
 
     @OneToMany(mappedBy = "college", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Degree> degrees = new HashSet<>();

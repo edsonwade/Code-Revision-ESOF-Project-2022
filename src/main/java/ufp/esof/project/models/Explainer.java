@@ -5,12 +5,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
+import org.hibernate.annotations.Where;
 
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import ufp.esof.project.models.base.AuditableEntity;
+import ufp.esof.project.models.enums.Role;
 
 @Entity
 @Table(name = "explainers")
@@ -18,7 +21,8 @@ import java.util.Set;
 @JsonPropertyOrder({"id", "name", "language"})
 @Getter
 @Setter
-public class Explainer {
+@Where(clause = "deleted_at IS NULL")
+public class Explainer extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
@@ -29,6 +33,13 @@ public class Explainer {
     private String email;
 
     private String name;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.EXPLAINER;
+
+    @Column(nullable = false)
+    private Long organizationId;
     @Enumerated(EnumType.STRING)
     @Column(name = "language")
     private Language language;

@@ -1,10 +1,3 @@
-/**
- * Author: vanilson muhongo
- * Date:09/06/2025
- * Time:18:40
- * Version:1
- */
-
 package ufp.esof.project.models;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,8 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
+import ufp.esof.project.models.base.AuditableEntity;
 
 @Entity
 @Table(name = "reviews")
@@ -22,7 +17,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Review {
+@Where(clause = "deleted_at IS NULL")
+public class Review extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
