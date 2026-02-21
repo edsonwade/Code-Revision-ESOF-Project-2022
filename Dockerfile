@@ -1,56 +1,59 @@
-#########################################
-# Build Stage: Build the application using Maven
-#########################################
-FROM maven:3.8.1-openjdk-17 AS builder
+# ===================================================================
+# Stage 1: Build Stage
+# ===================================================================
+FROM maven:3.9.5-eclipse-temurin-17 AS builder
 
-WORKDIR /app
+# Set working directory
+WORKDIR /build
 
-# First, copy only the pom.xml to leverage Docker cache for dependencies
+# Copy pom.xml first for dependency caching
 COPY pom.xml .
 
+# Download dependencies (cached layer)
 RUN mvn dependency:go-offline -B
 
-# Copy the rest of the source code and build the application
-COPY src src
+# Copy source code
+COPY src ./src
+
+# Build the application with production profile
 RUN mvn clean package -DskipTests
 
-#########################################
-# Package Stage: Create the final container image
-#########################################
-FROM openjdk:17
+# ===================================================================
+# Stage 2: Runtime Stage
+# ===================================================================
+FROM eclipse-temurin:17-jre-alpine
 
-# Define build arguments
-ARG BUILD_DATE
-ARG BUILD_USER
-ARG GIT_COMMIT
+# Labels for metadata
+LABEL maintainer="saas-team@company.com" \
+    version="1.0.0" \
+    description="SaaS Application - Production Ready"
 
-# Add labels with proper quoting
-LABEL org.label-schema.build-date="${BUILD_DATE}" \
-      org.label-schema.vcs-ref="${GIT_COMMIT}" \
-      org.label-schema.built-by="${BUILD_USER}"
-
-# Create a non-root user
-RUN groupadd -r spring && useradd -r -g spring spring
-
-# Set environment variables
-ENV SERVER_PORT=8080
-# Set the Spring profile to prod by default
-ENV SPRING_PROFILES_ACTIVE=prod
-
-# Set working directory and ownership
+# Set working directory
 WORKDIR /app
-COPY --from=builder /app/target/*.jar /app/project-0.0.1-SNAPSHOT.jar
-RUN chown -R spring:spring /app
+
+# Create non-root user for security
+RUN addgroup -g 1000 -S appgroup && \
+    adduser -u 1000 -S appuser -G appgroup
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/config /app/temp && \
+    chown -R appuser:appgroup /app
+
+# Copy the built artifact from builder stage
+COPY --from=builder /build/target/*.jar app.jar
 
 # Switch to non-root user
-USER spring
+USER appuser
 
-# Expose the port that the application will run on
-EXPOSE ${SERVER_PORT}
+# Expose application port
+EXPOSE 8080
 
-# Health check (using curl instead of wget as it's more commonly available)
-HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:${SERVER_PORT}/actuator/health || exit 1
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/actuator/health || exit 1
 
-# Specify the command to run your application
-ENTRYPOINT ["java", "-jar", "/app/project-0.0.1-SNAPSHOT.jar"]
+# JVM Options for production
+ENV JAVA_OPTS="-Xms512m -Xmx1024m -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+HeapDumpOnOutOfMemoryError"
+
+# Entrypoint with Java options
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
