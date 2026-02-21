@@ -3,13 +3,17 @@ package ufp.esof.project.services;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ufp.esof.project.models.College;
 import ufp.esof.project.models.Degree;
 import ufp.esof.project.repository.CollegeRepo;
 import ufp.esof.project.repository.DegreeRepo;
 
 @Service
+@Transactional
 public class CollegeService {
 
     private final CollegeRepo collegeRepo;
@@ -21,18 +25,22 @@ public class CollegeService {
         this.degreeRepo = degreeRepo;
     }
 
+    @Cacheable(value = "colleges", key = "#id")
     public Optional<College> findById(Long id) {
         return this.collegeRepo.findById(id);
     }
 
+    @Cacheable(value = "colleges", key = "#name")
     public Optional<College> findByName(String name) {
         return this.collegeRepo.findByName(name);
     }
 
+    @Cacheable(value = "colleges", key = "'all'")
     public Iterable<College> getAllColleges() {
         return this.collegeRepo.findAll();
     }
 
+    @CacheEvict(value = "colleges", allEntries = true)
     public boolean deleteById(Long id) {
         Optional<College> optionalCollege = this.findById(id);
         if (optionalCollege.isPresent()) {
@@ -46,6 +54,7 @@ public class CollegeService {
         return false;
     }
 
+    @CacheEvict(value = "colleges", allEntries = true)
     public Optional<College> createCollege(College college) {
         College newCollege = new College();
 
@@ -62,6 +71,7 @@ public class CollegeService {
         return Optional.of(this.collegeRepo.save(newCollege));
     }
 
+    @CacheEvict(value = "colleges", allEntries = true)
     public Optional<College> editCollege(College currentCollege, College college, Long id) {
         College newCollege = new College();
         Optional<College> optionalCollege = this.validateDegrees(currentCollege, college);

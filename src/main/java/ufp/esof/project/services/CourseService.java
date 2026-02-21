@@ -3,13 +3,17 @@ package ufp.esof.project.services;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ufp.esof.project.models.Course;
 import ufp.esof.project.models.Degree;
 import ufp.esof.project.models.Explainer;
 import ufp.esof.project.repository.CourseRepo;
 
 @Service
+@Transactional
 public class CourseService {
 
     private final CourseRepo courseRepo;
@@ -22,14 +26,17 @@ public class CourseService {
         this.explainerService = explainerService;
     }
 
+    @Cacheable(value = "courses", key = "'all'")
     public Iterable<Course> findAllCourses() {
         return this.courseRepo.findAll();
     }
 
+    @Cacheable(value = "courses", key = "#id")
     public Optional<Course> findById(Long id) {
         return this.courseRepo.findById(id);
     }
 
+    @CacheEvict(value = "courses", allEntries = true)
     public boolean deleteById(Long id) {
         Optional<Course> optionalCourse = this.findById(id);
         if (optionalCourse.isPresent()) {
@@ -39,6 +46,7 @@ public class CourseService {
         return false;
     }
 
+    @CacheEvict(value = "courses", allEntries = true)
     public Optional<Course> createCourse(Course course) {
         Course newCourse = new Course();
         Optional<Course> optionalCourse = this.validateExplainers(course, course);
@@ -58,6 +66,7 @@ public class CourseService {
         return Optional.empty();
     }
 
+    @CacheEvict(value = "courses", allEntries = true)
     public Optional<Course> editCourse(Course currentCourse, Course course, Long id) {
         Course newCourse = new Course();
         Optional<Course> optionalCourse = this.validateExplainers(currentCourse, course);

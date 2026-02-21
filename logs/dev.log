@@ -23935,3 +23935,433 @@ ufp.esof.project.exception.appointmentexception.InvalidAppointmentException: not
 2026-02-21 21:56:24,723 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 deleted successfully
 2026-02-21 21:56:24,739 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Rescheduling appointment: 1
 2026-02-21 21:56:24,741 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 rescheduled successfully
+2026-02-21 22:21:40,873 INFO  [background-preinit] o.h.validator.internal.util.Version: HV000001: Hibernate Validator 8.0.2.Final
+2026-02-21 22:21:41,376 INFO  [main] u.e.p.c.AppointmentControllerTest: Starting AppointmentControllerTest using Java 17.0.9 with PID 11544 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:21:41,378 INFO  [main] u.e.p.c.AppointmentControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:21:57,509 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:21:57,519 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:21:57,525 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 4 ms
+2026-02-21 22:21:57,638 INFO  [main] u.e.p.c.AppointmentControllerTest: Started AppointmentControllerTest in 19.942 seconds (process running for 26.828)
+2026-02-21 22:21:58,304 ERROR [main] u.e.p.e.h.GlobalExceptionHandler: Unexpected error
+ufp.esof.project.exception.appointmentexception.InvalidAppointmentException: not found
+	at ufp.esof.project.services.AppointmentServiceImpl.findAppointmentById(AppointmentServiceImpl.java:46)
+	at ufp.esof.project.controllers.AppointmentController.getById(AppointmentController.java:32)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:165)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201)
+	at ufp.esof.project.controllers.AppointmentControllerTest.testGetAppointmentByIdNotFound(AppointmentControllerTest.java:73)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:218)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:214)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:139)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:55)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:223)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:175)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:139)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:456)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:169)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:595)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:581)
+2026-02-21 22:21:59,322 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.AvailabilityControllerTest]: AvailabilityControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:21:59,521 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.AvailabilityControllerTest
+2026-02-21 22:21:59,535 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:21:59,542 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:21:59,694 INFO  [main] u.e.p.c.AvailabilityControllerTest: Starting AvailabilityControllerTest using Java 17.0.9 with PID 11544 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:21:59,700 INFO  [main] u.e.p.c.AvailabilityControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:22:02,818 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:22:02,822 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:22:02,826 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 2 ms
+2026-02-21 22:22:02,858 INFO  [main] u.e.p.c.AvailabilityControllerTest: Started AvailabilityControllerTest in 3.326 seconds (process running for 32.048)
+2026-02-21 22:22:02,984 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid availability: The availability with id 999 does not exist
+2026-02-21 22:22:03,091 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.CollegeControllerTest]: CollegeControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:22:03,177 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.CollegeControllerTest
+2026-02-21 22:22:03,189 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:22:03,198 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:22:03,346 INFO  [main] u.e.p.c.CollegeControllerTest: Starting CollegeControllerTest using Java 17.0.9 with PID 11544 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:22:03,346 INFO  [main] u.e.p.c.CollegeControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:22:05,266 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:22:05,268 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:22:05,268 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 0 ms
+2026-02-21 22:22:05,286 INFO  [main] u.e.p.c.CollegeControllerTest: Started CollegeControllerTest in 2.097 seconds (process running for 34.476)
+2026-02-21 22:22:05,317 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid college: The college with id 999 does not exist
+2026-02-21 22:22:05,372 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.CourseControllerTest]: CourseControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:22:05,428 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.CourseControllerTest
+2026-02-21 22:22:05,434 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:22:05,438 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:22:05,535 INFO  [main] u.e.p.c.CourseControllerTest: Starting CourseControllerTest using Java 17.0.9 with PID 11544 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:22:05,537 INFO  [main] u.e.p.c.CourseControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:22:06,786 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:22:06,786 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:22:06,788 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 2 ms
+2026-02-21 22:22:06,807 INFO  [main] u.e.p.c.CourseControllerTest: Started CourseControllerTest in 1.374 seconds (process running for 35.996)
+2026-02-21 22:22:06,852 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid course: The course with id 999 does not exist
+2026-02-21 22:22:06,907 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.DegreeControllerTest]: DegreeControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:22:06,951 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.DegreeControllerTest
+2026-02-21 22:22:06,966 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:22:06,975 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:22:07,096 INFO  [main] u.e.p.c.DegreeControllerTest: Starting DegreeControllerTest using Java 17.0.9 with PID 11544 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:22:07,097 INFO  [main] u.e.p.c.DegreeControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:22:08,222 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:22:08,223 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:22:08,226 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 2 ms
+2026-02-21 22:22:08,252 INFO  [main] u.e.p.c.DegreeControllerTest: Started DegreeControllerTest in 1.286 seconds (process running for 37.443)
+2026-02-21 22:22:08,276 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid degree: The degree with id "999" does not exist
+2026-02-21 22:22:08,314 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.ExplainerControllerTest]: ExplainerControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:22:08,370 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.ExplainerControllerTest
+2026-02-21 22:22:08,381 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:22:08,393 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:22:08,470 INFO  [main] u.e.p.c.ExplainerControllerTest: Starting ExplainerControllerTest using Java 17.0.9 with PID 11544 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:22:08,470 INFO  [main] u.e.p.c.ExplainerControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:22:09,807 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:22:09,808 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:22:09,809 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 0 ms
+2026-02-21 22:22:09,819 INFO  [main] u.e.p.c.ExplainerControllerTest: Started ExplainerControllerTest in 1.439 seconds (process running for 39.01)
+2026-02-21 22:22:09,846 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid explainer: The explainer with id "999" does not exist
+2026-02-21 22:22:09,904 INFO  [main] u.e.p.c.ExplainerController: all explainers
+2026-02-21 22:22:10,046 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.ReviewControllerTest]: ReviewControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:22:10,087 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.ReviewControllerTest
+2026-02-21 22:22:10,096 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:22:10,103 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:22:10,170 INFO  [main] u.e.p.c.ReviewControllerTest: Starting ReviewControllerTest using Java 17.0.9 with PID 11544 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:22:10,171 INFO  [main] u.e.p.c.ReviewControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:22:11,465 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:22:11,470 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:22:11,470 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 0 ms
+2026-02-21 22:22:11,483 INFO  [main] u.e.p.c.ReviewControllerTest: Started ReviewControllerTest in 1.388 seconds (process running for 40.672)
+2026-02-21 22:22:11,545 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.StudentControllerTest]: StudentControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:22:11,591 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.StudentControllerTest
+2026-02-21 22:22:11,598 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:22:11,605 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:22:11,660 INFO  [main] u.e.p.c.StudentControllerTest: Starting StudentControllerTest using Java 17.0.9 with PID 11544 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:22:11,662 INFO  [main] u.e.p.c.StudentControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:22:12,600 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:22:12,601 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:22:12,603 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 0 ms
+2026-02-21 22:22:12,619 INFO  [main] u.e.p.c.StudentControllerTest: Started StudentControllerTest in 1.021 seconds (process running for 41.808)
+2026-02-21 22:22:15,629 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Cancelling appointment: 1
+2026-02-21 22:22:15,690 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Rescheduling appointment: 1
+2026-02-21 22:22:15,811 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Updating appointment 1 status to RESCHEDULED
+2026-02-21 22:22:15,820 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 status updated to RESCHEDULED
+2026-02-21 22:22:15,917 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Updating appointment 1 status to CANCELLED
+2026-02-21 22:22:16,023 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 1, explainer: 999
+2026-02-21 22:22:16,059 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Completing appointment: 1
+2026-02-21 22:22:16,062 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 completed successfully
+2026-02-21 22:22:16,078 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Deleting appointment: 999
+2026-02-21 22:22:16,091 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Marking appointment as no-show: 1
+2026-02-21 22:22:16,093 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 marked as no-show
+2026-02-21 22:22:16,107 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 1, explainer: 2
+2026-02-21 22:22:16,115 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Rescheduling appointment: 999
+2026-02-21 22:22:16,170 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 1, explainer: 2
+2026-02-21 22:22:16,191 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Cancelling appointment: 1
+2026-02-21 22:22:16,197 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 cancelled successfully
+2026-02-21 22:22:16,228 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 999, explainer: 2
+2026-02-21 22:22:16,258 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 1, explainer: 2
+2026-02-21 22:22:16,262 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment created successfully with ID: 1
+2026-02-21 22:22:16,320 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Deleting appointment: 1
+2026-02-21 22:22:16,320 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 deleted successfully
+2026-02-21 22:22:16,335 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Rescheduling appointment: 1
+2026-02-21 22:22:16,338 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 rescheduled successfully
+2026-02-21 22:29:02,057 INFO  [background-preinit] o.h.validator.internal.util.Version: HV000001: Hibernate Validator 8.0.2.Final
+2026-02-21 22:29:02,373 INFO  [main] u.e.p.c.AppointmentControllerTest: Starting AppointmentControllerTest using Java 17.0.9 with PID 17492 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:29:02,377 INFO  [main] u.e.p.c.AppointmentControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:29:17,702 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:29:17,704 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:29:17,712 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 4 ms
+2026-02-21 22:29:17,826 INFO  [main] u.e.p.c.AppointmentControllerTest: Started AppointmentControllerTest in 18.8 seconds (process running for 25.144)
+2026-02-21 22:29:18,651 ERROR [main] u.e.p.e.h.GlobalExceptionHandler: Unexpected error
+ufp.esof.project.exception.appointmentexception.InvalidAppointmentException: not found
+	at ufp.esof.project.services.AppointmentServiceImpl.findAppointmentById(AppointmentServiceImpl.java:46)
+	at ufp.esof.project.controllers.AppointmentController.getById(AppointmentController.java:32)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:72)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:165)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.test.web.servlet.setup.MockMvcFilterDecorator.doFilter(MockMvcFilterDecorator.java:151)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:132)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:201)
+	at ufp.esof.project.controllers.AppointmentControllerTest.testGetAppointmentByIdNotFound(AppointmentControllerTest.java:73)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:728)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:218)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:214)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:139)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:198)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:169)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:93)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:141)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:57)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:55)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:223)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:175)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:139)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:456)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:169)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:595)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:581)
+2026-02-21 22:29:19,799 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.AvailabilityControllerTest]: AvailabilityControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:29:19,975 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.AvailabilityControllerTest
+2026-02-21 22:29:19,994 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:29:20,004 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:29:20,170 INFO  [main] u.e.p.c.AvailabilityControllerTest: Starting AvailabilityControllerTest using Java 17.0.9 with PID 17492 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:29:20,172 INFO  [main] u.e.p.c.AvailabilityControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:29:22,481 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:29:22,481 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:29:22,484 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 3 ms
+2026-02-21 22:29:22,504 INFO  [main] u.e.p.c.AvailabilityControllerTest: Started AvailabilityControllerTest in 2.511 seconds (process running for 29.821)
+2026-02-21 22:29:22,575 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid availability: The availability with id 999 does not exist
+2026-02-21 22:29:22,824 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.CollegeControllerTest]: CollegeControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:29:22,900 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.CollegeControllerTest
+2026-02-21 22:29:22,910 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:29:22,925 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:29:23,067 INFO  [main] u.e.p.c.CollegeControllerTest: Starting CollegeControllerTest using Java 17.0.9 with PID 17492 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:29:23,067 INFO  [main] u.e.p.c.CollegeControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:29:30,910 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:29:30,913 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:29:30,921 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 7 ms
+2026-02-21 22:29:31,384 INFO  [main] u.e.p.c.CollegeControllerTest: Started CollegeControllerTest in 8.476 seconds (process running for 38.701)
+2026-02-21 22:29:31,481 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid college: The college with id 999 does not exist
+2026-02-21 22:29:31,642 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.CourseControllerTest]: CourseControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:29:31,693 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.CourseControllerTest
+2026-02-21 22:29:31,702 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:29:31,708 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:29:31,816 INFO  [main] u.e.p.c.CourseControllerTest: Starting CourseControllerTest using Java 17.0.9 with PID 17492 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:29:31,818 INFO  [main] u.e.p.c.CourseControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:29:33,669 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:29:33,670 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:29:33,674 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 1 ms
+2026-02-21 22:29:33,691 INFO  [main] u.e.p.c.CourseControllerTest: Started CourseControllerTest in 1.988 seconds (process running for 41.008)
+2026-02-21 22:29:33,737 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid course: The course with id 999 does not exist
+2026-02-21 22:29:33,834 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.DegreeControllerTest]: DegreeControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:29:33,976 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.DegreeControllerTest
+2026-02-21 22:29:33,984 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:29:34,010 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:29:34,257 INFO  [main] u.e.p.c.DegreeControllerTest: Starting DegreeControllerTest using Java 17.0.9 with PID 17492 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:29:34,258 INFO  [main] u.e.p.c.DegreeControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:29:36,024 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:29:36,025 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:29:36,043 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 4 ms
+2026-02-21 22:29:36,072 INFO  [main] u.e.p.c.DegreeControllerTest: Started DegreeControllerTest in 2.088 seconds (process running for 43.389)
+2026-02-21 22:29:36,134 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid degree: The degree with id "999" does not exist
+2026-02-21 22:29:36,233 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.ExplainerControllerTest]: ExplainerControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:29:36,315 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.ExplainerControllerTest
+2026-02-21 22:29:36,330 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:29:36,353 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:29:36,491 INFO  [main] u.e.p.c.ExplainerControllerTest: Starting ExplainerControllerTest using Java 17.0.9 with PID 17492 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:29:36,491 INFO  [main] u.e.p.c.ExplainerControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:29:37,910 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:29:37,910 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:29:37,913 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 1 ms
+2026-02-21 22:29:37,923 INFO  [main] u.e.p.c.ExplainerControllerTest: Started ExplainerControllerTest in 1.594 seconds (process running for 45.241)
+2026-02-21 22:29:37,948 WARN  [main] u.e.p.e.h.GlobalExceptionHandler: Invalid explainer: The explainer with id "999" does not exist
+2026-02-21 22:29:37,993 INFO  [main] u.e.p.c.ExplainerController: all explainers
+2026-02-21 22:29:38,036 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.ReviewControllerTest]: ReviewControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:29:38,116 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.ReviewControllerTest
+2026-02-21 22:29:38,122 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:29:38,132 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:29:38,230 INFO  [main] u.e.p.c.ReviewControllerTest: Starting ReviewControllerTest using Java 17.0.9 with PID 17492 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:29:38,231 INFO  [main] u.e.p.c.ReviewControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:29:39,417 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:29:39,418 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:29:39,419 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 1 ms
+2026-02-21 22:29:39,430 INFO  [main] u.e.p.c.ReviewControllerTest: Started ReviewControllerTest in 1.309 seconds (process running for 46.747)
+2026-02-21 22:29:39,488 INFO  [main] o.s.t.c.s.AnnotationConfigContextLoaderUtils: Could not detect default configuration classes for test class [ufp.esof.project.controllers.StudentControllerTest]: StudentControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-02-21 22:29:39,524 INFO  [main] o.s.b.t.c.SpringBootTestContextBootstrapper: Found @SpringBootConfiguration ufp.esof.project.WebApplication for test class ufp.esof.project.controllers.StudentControllerTest
+2026-02-21 22:29:39,543 INFO  [main] o.s.b.d.r.RestartApplicationListener: Restart disabled due to context in which it is running
+2026-02-21 22:29:39,550 INFO  [main] m.p.s.DotenvPropertySource: Initialized Dotenv with DotenvConfig{directory=null, filename=null, ignoreIfMalformed=false, ignoreIfMissing=true, systemProperties=false, prefix=null}
+2026-02-21 22:29:39,684 INFO  [main] u.e.p.c.StudentControllerTest: Starting StudentControllerTest using Java 17.0.9 with PID 17492 (started by HP in C:\Users\HP\Documents\development\Java\Projects\Code-Revision-ESOF-Project-2022)
+2026-02-21 22:29:39,685 INFO  [main] u.e.p.c.StudentControllerTest: The following 1 profile is active: "dev"
+2026-02-21 22:29:40,754 INFO  [main] o.s.b.t.m.w.SpringBootMockServletContext: Initializing Spring TestDispatcherServlet ''
+2026-02-21 22:29:40,755 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Initializing Servlet ''
+2026-02-21 22:29:40,757 INFO  [main] o.s.t.w.s.TestDispatcherServlet: Completed initialization in 1 ms
+2026-02-21 22:29:40,777 INFO  [main] u.e.p.c.StudentControllerTest: Started StudentControllerTest in 1.234 seconds (process running for 48.094)
+2026-02-21 22:29:44,154 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Cancelling appointment: 1
+2026-02-21 22:29:44,199 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Rescheduling appointment: 1
+2026-02-21 22:29:44,286 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Updating appointment 1 status to RESCHEDULED
+2026-02-21 22:29:44,288 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 status updated to RESCHEDULED
+2026-02-21 22:29:44,303 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Updating appointment 1 status to CANCELLED
+2026-02-21 22:29:44,332 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 1, explainer: 999
+2026-02-21 22:29:44,359 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Completing appointment: 1
+2026-02-21 22:29:44,361 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 completed successfully
+2026-02-21 22:29:44,372 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Deleting appointment: 999
+2026-02-21 22:29:44,382 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Marking appointment as no-show: 1
+2026-02-21 22:29:44,384 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 marked as no-show
+2026-02-21 22:29:44,403 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 1, explainer: 2
+2026-02-21 22:29:44,427 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Rescheduling appointment: 999
+2026-02-21 22:29:44,447 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 1, explainer: 2
+2026-02-21 22:29:44,454 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Cancelling appointment: 1
+2026-02-21 22:29:44,455 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 cancelled successfully
+2026-02-21 22:29:44,469 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 999, explainer: 2
+2026-02-21 22:29:44,481 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Creating new appointment for student: 1, explainer: 2
+2026-02-21 22:29:44,484 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment created successfully with ID: 1
+2026-02-21 22:29:44,507 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Deleting appointment: 1
+2026-02-21 22:29:44,507 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 deleted successfully
+2026-02-21 22:29:44,518 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Rescheduling appointment: 1
+2026-02-21 22:29:44,520 INFO  [main] u.e.p.s.a.AppointmentManagementServiceImpl: Appointment 1 rescheduled successfully

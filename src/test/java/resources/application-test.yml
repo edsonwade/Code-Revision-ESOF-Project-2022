@@ -1,19 +1,58 @@
 spring:
+  application:
+    name: university-application
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5436/shop-test-db}
-    username: test
-    password: test
     driver-class-name: org.postgresql.Driver
   jpa:
+
     hibernate:
-      ddl-auto: drop-create
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
         format_sql: true
 
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    modules:
+      - com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+
   flyway:
-    enabled: false
+    enabled: true
+    locations: classpath:db/migration
+    clean-disabled: false
+
+
+
+
+  mail:
+    host: localhost
+    port: 3025
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+logging:
+  level:
+    root: INFO
+    ufp.esof.project: DEBUG
+    org.springframework.web: INFO
+    org.hibernate.SQL: DEBUG
+    org.flywaydb: INFO
 
 server:
-  port: 8088
+  error:
+    include-message: always
+    include-binding-errors: always
+
+  # JWT Configuration
+app:
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration: 86400000 # 1 day

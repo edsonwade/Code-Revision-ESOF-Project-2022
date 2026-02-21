@@ -48,6 +48,8 @@ build/
 ### VS Code ###
 .vscode/
 
+###
+/Documents
 
 
 # Editor-based Rest Client

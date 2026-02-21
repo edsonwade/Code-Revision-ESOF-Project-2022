@@ -4,139 +4,141 @@ services:
     image: edsonwade126/university-management-system:latest
     container_name: university-management-dev
     ports:
-      - "8087:8087"
+      - "8081:8080"
     depends_on:
-      - postgres_dev
-      - redis
-      - mongodb
-    environment:
-      DATABASE_URL: jdbc:postgresql://postgres_dev:5432/${POSTGRES_DEV_DB}
-      POSTGRES_USER: ${POSTGRES_DEV_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_DEV_PASSWORD}
-      HIBERNATE_DDL_AUTO: ${HIBERNATE_DDL_DEV_AUTO}
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_DEV_ACTIVE}
-      SERVER_PORT: 8087
-    env_file:
-      - .env
-    networks:
-      - university-management-net
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8087/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 70s
-    restart: on-failure
+      postgres_dev:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongo-primary:
+        condition: service_healthy
 
-  # University management system for Docker
-  university-management-system-docker:
-    image: edsonwade126/university-management-system:latest
-    container_name: university-management-docker
-    ports:
-      - "8085:8085"
-    depends_on:
-      - postgres_docker
-      - redis
-      - mongodb
     environment:
-      DATABASE_URL: jdbc:postgresql://postgres_docker:5432/${POSTGRES_DOCKER_DB}
-      SERVER_PORT: 8085
-      HIBERNATE_DDL_AUTO: ${HIBERNATE_DDL_DOCKER_AUTO}
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_DOCKER_ACTIVE}
-    env_file:
-      - .env
-    networks:
-      - university-management-net
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8085/actuator/health" ]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 70s
-    restart: unless-stopped
-
-
-    # PostgreSQL Replica para Dev
-  postgres_replica_dev:
-    image: postgres:alpine
-    container_name: postgres_replica_prod
-    environment:
-      POSTGRES_USER: ${POSTGRES_PROD_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PROD_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_PROD_DB}
-    ports:
-      - "5435:5432"
+      SERVER_PORT: "8080"
+      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-primary:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_MONGODB_URI: mongodb://mongo-primary:27017/${MONGO_DB}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_MAIL_HOST: ${MAIL_HOST}
+      SPRING_MAIL_PORT: ${MAIL_PORT}
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MANAGEMENT_HEALTH_MAIL_ENABLED: "false"
+      MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: "always"
     volumes:
-      - postgres_replica_prod_data:/var/lib/postgresql/data
+      - ./src/main/java:/app/src/main/java
+      - ./src/main/resources:/app/src/main/resources
+    env_file:
+      - .env
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "-q",
+          "--spider",
+          "http://localhost:8081/api/v1/actuator/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2048M
+        reservations:
+          cpus: '1.0'
+          memory: 1024M
+
+
+      # ==================== PostgreSQL ====================
+  postgres-primary:
+    image: postgres:16-alpine
+    container_name: postgres-primary
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-primary-data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     networks:
       - university-management-net
-    command: >
-      postgres -c 'wal_level=replica'
-               -c 'max_wal_senders=10'
-               -c 'hot_standby=on'
-               -c "primary_conninfo=host=postgres_prod port=5432 user=replicator password=replicator_password"
-               -c 'primary_slot_name=replica_slot'
-    depends_on:
-      - postgres_dev
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_PROD_USER} -d ${POSTGRES_PROD_DB}" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
-    # PostgreSQL container for development
-  postgres_dev:
-    image: postgres:alpine
-    container_name: postgres_dev
     ports:
       - "5433:5432"
-    environment:
-      POSTGRES_DB: ${POSTGRES_DEV_DB}
-      POSTGRES_USER: ${POSTGRES_DEV_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_DEV_PASSWORD}
-    volumes:
-      - postgres-dev-data:/var/lib/postgresql/data
-    networks:
-      - university-management-net
-    command: |
-      postgres -c 'wal_keep_size=64MB'
-    env_file:
-      - .env
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_DEV_USER} -d ${POSTGRES_DEV_DB}" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: always
-    # PostgreSQL container for Docker
-  postgres_docker:
-    image: postgres:alpine
-    container_name: postgres_docker
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: ${POSTGRES_DOCKER_DB}
-      POSTGRES_USER: ${POSTGRES_DOCKER_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_DOCKER_PASSWORD}
-    volumes:
-      - postgres_docker_data:/var/lib/postgresql/data
-    networks:
-      - university-management-net
-    command: |
-      postgres -c 'wal_level=replica' -c 'max_wal_senders=10' -c 'hot_standby=on'
-    env_file:
-      - .env
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_DOCKER_USER} -d ${POSTGRES_DOCKER_DB}" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      start_period: 10s
+    command: >
+      postgres
+      -c wal_level=replica
+      -c max_wal_senders=10
+      -c wal_keep_size=1GB
+      -c password_encryption=scram-sha-256
     restart: unless-stopped
+
+  postgres-replica:
+    image: postgres:16-alpine
+    container_name: postgres-replica
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    depends_on:
+      - postgres-primary
+    volumes:
+      - postgres-replica-data:/var/lib/postgresql/data
+    networks:
+      - university-management-net
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    command: [ "postgres", "-c", "hot_standby=on", "-c", "primary_conninfo=host=postgres-primary port=5432 user=postgres password=postgres" ]
+
+    restart: unless-stopped
+
+    # ==================== PostgreSQL Test ====================
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: postgres-test
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: market_test
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+    networks:
+      - university-management-net
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      - postgres-primary
+
 
   # Test Database
   postgres_test:
-    image: postgres:alpine
+    image: postgres:16-alpine
     container_name: postgres_test
     ports:
       - "5436:5432"  # Different port for test
@@ -156,98 +158,155 @@ services:
     restart: unless-stopped
 
 
-  # Main MongoDB container for the application
-  mongodb:
-    image: mongo:6.0
-    container_name: mongodb
-    restart: unless-stopped
+  # ==================== MongoDB (Single-node Replica Set, no keyfile) ====================
+  mongo-primary:
+    image: mongo:7.0
+    container_name: mongo-primary
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: market_db
+    volumes:
+      - mongo-primary-data:/data/db
+      - mongo-primary-config:/data/configdb
+    networks:
+      - university-management-net
     ports:
       - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-    env_file:
-      - .env
-    command: [ "mongod", "--wiredTigerCacheSizeGB", "1" ]
-    networks:
-      - university-management-net
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: [ "mongod", "--replSet", "rs0", "--bind_ip_all" ]
 
-    # MongoDB Express for managing MongoDB
-  mongo-express:
-    image: mongo-express:latest
-    container_name: mongo-express
-    restart: always
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_ROOT_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_ROOT_PASSWORD}
-      ME_CONFIG_MONGODB_PORT: 27017
-      ME_CONFIG_MONGODB_SERVER: 'mongodb'
-      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_ROOT_USERNAME}
-      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_ROOT_PASSWORD}
-    ports:
-      - '8081:8081'
+  # Initializes the replica set automatically after mongo-primary is healthy
+  mongo-init:
+    image: mongo:7.0
+    container_name: mongo-init
+    depends_on:
+      mongo-primary:
+        condition: service_healthy
     networks:
       - university-management-net
-    depends_on:
-      - mongodb
+    restart: "no"
+    entrypoint: >
+      mongosh --host mongo-primary:27017 --eval '
+        try {
+          rs.status();
+          print("Replica set already initialized.");
+        } catch (e) {
+          rs.initiate({ _id: "rs0", members: [{ _id: 0, host: "localhost:27017" }] });
+          print("Replica set initiated.");
+        }
+      '
 
     # Redis container for caching
   redis:
-    image: redis:6.2
+    image: redis:6.2-alpine
     volumes:
       - redis_data:/var/lib/redis/data
     ports:
       - "6380:6379"
     networks:
       - university-management-net
-    command: [ "redis-server", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru" ]
+    command: >
+      redis-server 
+      --maxmemory 256mb 
+      --maxmemory-policy allkeys-lru 
+      --appendonly yes
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    # ==================== SMTP (Mailhog) ====================
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    networks:
+      - university-management-net
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MH_STORAGE: maildir
+      MH_MAILDIR_PATH: /maildir
+    volumes:
+      - mailhog-data:/maildir
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:8025" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
-  # Prometheus for monitoring and alerting
+    # ==================== Prometheus ====================
   prometheus:
-    image: prom/prometheus:v2.41.0
+    image: prom/prometheus:v2.47.0
     container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - university-management-net
     ports:
       - "9090:9090"
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ==================== Grafana ====================
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: grafana
     volumes:
-      - "./src/main/resources/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
-      - prometheus_data:/prometheus
-    restart: unless-stopped
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_SERVER_ROOT_URL: http://localhost:3000
     networks:
       - university-management-net
-    depends_on:
-      - university-management-system-dev
-      - university-management-system-docker
-
-    # Grafana for visualizing metrics
-  grafana:
-    image: grafana/grafana:9.5.2
-    container_name: grafana
     ports:
       - "3000:3000"
-    volumes:
-      - ./src/main/resources/grafana:/etc/grafana/provisioning/datasources
     depends_on:
       - prometheus
-    restart: unless-stopped
-    networks:
-      - university-management-net
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=grafana
+    healthcheck:
+      test: [ "CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 # Volumes for persistent data
 volumes:
-  postgres_replica_prod_data:
+  # PostgreSQL volumes
+  postgres-primary-data:
     driver: local
-  postgres-dev-data:
+  postgres-replica-data:
     driver: local
-  postgres_docker_data:
+  postgres-test-data:
     driver: local
   prometheus_data:
     driver: local
@@ -255,9 +314,10 @@ volumes:
     driver: local
   redis_data:
     driver: local
-  mongo_data:
+  mongo-primary-data:
     driver: local
-  postgres-test-data:
+    # Mailhog volume
+  mailhog-data:
     driver: local
 
     # Custom network for the application
