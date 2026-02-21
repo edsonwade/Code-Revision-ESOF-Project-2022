@@ -35,11 +35,11 @@ class CourseControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/course/{id} returns 400 when not found")
+    @DisplayName("GET /api/v1/course/{id} returns 404 when not found")
     void testGetCourseByIdNotFound() throws Exception {
         when(courseService.findById(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/v1/course/999"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }

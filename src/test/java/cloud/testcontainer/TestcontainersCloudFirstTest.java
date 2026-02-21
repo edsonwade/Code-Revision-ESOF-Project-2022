@@ -13,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -21,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Testcontainers
+@Disabled("Requires Docker/Testcontainers Cloud")
 @ExtendWith(TccTestWatcher.class)
 // Este watcher é específico do Testcontainers Cloud, pode remover se não estiver a usar
 public class TestcontainersCloudFirstTest {

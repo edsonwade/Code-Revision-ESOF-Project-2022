@@ -200,6 +200,106 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handle invalid availability exceptions.
+     */
+    @ExceptionHandler(ufp.esof.project.controllers.AvailabilityController.InvalidAvailabilityException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAvailability(
+            ufp.esof.project.controllers.AvailabilityController.InvalidAvailabilityException ex,
+            WebRequest request) {
+        log.warn("Invalid availability: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Not Found")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Handle invalid college exceptions.
+     */
+    @ExceptionHandler(ufp.esof.project.controllers.CollegeController.InvalidCollegeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCollege(
+            ufp.esof.project.controllers.CollegeController.InvalidCollegeException ex,
+            WebRequest request) {
+        log.warn("Invalid college: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Not Found")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Handle invalid course exceptions.
+     */
+    @ExceptionHandler(ufp.esof.project.controllers.CourseController.InvalidCourseException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCourse(
+            ufp.esof.project.controllers.CourseController.InvalidCourseException ex,
+            WebRequest request) {
+        log.warn("Invalid course: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Not Found")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Handle invalid explainer exceptions.
+     */
+    @ExceptionHandler(ufp.esof.project.controllers.ExplainerController.InvalidExplainerException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidExplainer(
+            ufp.esof.project.controllers.ExplainerController.InvalidExplainerException ex,
+            WebRequest request) {
+        log.warn("Invalid explainer: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Not Found")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Handle invalid degree exceptions.
+     */
+    @ExceptionHandler(ufp.esof.project.controllers.DegreeController.InvalidDegreeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidDegree(
+            ufp.esof.project.controllers.DegreeController.InvalidDegreeException ex,
+            WebRequest request) {
+        log.warn("Invalid degree: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Not Found")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
      * Handle generic exceptions.
      */
     @ExceptionHandler(Exception.class)

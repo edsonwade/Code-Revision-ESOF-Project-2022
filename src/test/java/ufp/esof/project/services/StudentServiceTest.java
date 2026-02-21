@@ -11,11 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ufp.esof.project.exception.StudentNotFoundException;
+import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Student;
 import ufp.esof.project.repository.StudentRepository;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -182,35 +184,37 @@ class StudentServiceTest {
         testStudent.getAppointments().clear();
 
         when(studentRepository.findById(1L)).thenReturn(Optional.of(testStudent));
-        when(studentRepository.save(any(Student.class))).thenReturn(testStudent);
 
         boolean result = studentService.deleteStudentById(1L);
 
         assertThat(result).isTrue();
         verify(studentRepository).findById(1L);
-        verify(studentRepository).save(any(Student.class));
+        verify(studentRepository).deleteById(1L);
     }
 
     @Test
     @DisplayName("Should return false when deleting student with existing appointments")
     void testDeleteStudentWithAppointmentsFails() {
+        Appointment testAppointment = new Appointment();
+        testStudent.getAppointments().add(testAppointment);
+        
         when(studentRepository.findById(1L)).thenReturn(Optional.of(testStudent));
 
         boolean result = studentService.deleteStudentById(1L);
 
         assertThat(result).isFalse();
         verify(studentRepository).findById(1L);
-        verify(studentRepository, never()).save(any(Student.class));
+        verify(studentRepository, never()).deleteById(anyLong());
     }
 
     @Test
-    @DisplayName("Should return false when deleting non-existent student")
+    @DisplayName("Should throw StudentNotFoundException when deleting non-existent student")
     void testDeleteStudentNotFound() {
         when(studentRepository.findById(999L)).thenReturn(Optional.empty());
 
-        boolean result = studentService.deleteStudentById(999L);
-
-        assertThat(result).isFalse();
+        assertThatThrownBy(() -> studentService.deleteStudentById(999L))
+                .isInstanceOf(StudentNotFoundException.class)
+                .hasMessageContaining("999");
         verify(studentRepository).findById(999L);
     }
 
@@ -220,12 +224,11 @@ class StudentServiceTest {
         testStudent.getAppointments().clear();
 
         when(studentRepository.findById(1L)).thenReturn(Optional.of(testStudent));
-        when(studentRepository.save(any(Student.class))).thenReturn(testStudent);
 
         studentService.deleteStudentById(1L);
 
         verify(studentRepository, times(1)).findById(1L);
-        verify(studentRepository, times(1)).save(any(Student.class));
+        verify(studentRepository, times(1)).deleteById(1L);
     }
 
 

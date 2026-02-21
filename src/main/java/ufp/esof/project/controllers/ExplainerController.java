@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ufp.esof.project.dto.ExplainerDto;
 import ufp.esof.project.models.Explainer;
+import ufp.esof.project.services.ExplainerServiceImpl;
 
 import java.util.Optional;
 import java.util.Set;
-import ufp.esof.project.services.ExplainerServiceImpl;
 
 @RestController
 @RequestMapping(path = "/api/v1/explainer")
@@ -71,7 +71,7 @@ public class ExplainerController {
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteExplainer(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteExplainer(@PathVariable Long id) {
         boolean res = this.explainerServiceImpl.deleteById(id);
         Optional<Explainer> optionalExplainer = this.explainerServiceImpl.getById(id);
         if (optionalExplainer.isPresent())

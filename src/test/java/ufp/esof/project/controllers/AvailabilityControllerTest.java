@@ -25,12 +25,12 @@ class AvailabilityControllerTest {
     private AvailabilityService availabilityService;
 
     @Test
-    @DisplayName("GET /api/v1/availability returns bad request when not found")
+    @DisplayName("GET /api/v1/availability returns not found when not found")
     void testGetAvailabilityByIdNotFound() throws Exception {
         when(availabilityService.findById(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/v1/availability/999"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }
 

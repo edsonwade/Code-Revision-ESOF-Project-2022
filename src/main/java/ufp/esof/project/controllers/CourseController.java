@@ -11,6 +11,7 @@ import ufp.esof.project.services.CourseService;
 
 import java.util.Optional;
 
+@RestController
 @RequestMapping(path = "/api/v1/course")
 @RequiredArgsConstructor
 public class CourseController {

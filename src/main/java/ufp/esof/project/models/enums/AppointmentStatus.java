@@ -34,7 +34,7 @@ public enum AppointmentStatus {
      * @return true if appointment can be rescheduled, false otherwise
      */
     public boolean canBeRescheduled() {
-        return this == SCHEDULED;
+        return this == SCHEDULED || this == RESCHEDULED;
     }
 
     /**

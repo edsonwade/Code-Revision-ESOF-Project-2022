@@ -25,12 +25,12 @@ class CollegeControllerTest {
     private CollegeService collegeService;
 
     @Test
-    @DisplayName("GET /api/v1/college/{id} returns bad request when not found")
+    @DisplayName("GET /api/v1/college/{id} returns not found when not found")
     void testGetCollegeByIdNotFound() throws Exception {
         when(collegeService.findById(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/v1/college/999"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }
 

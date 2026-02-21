@@ -35,12 +35,12 @@ class ExplainerControllerTest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/explainer/{id} returns 400 when not found")
+    @DisplayName("GET /api/v1/explainer/{id} returns 404 when not found")
     void testGetExplainerByIdNotFound() throws Exception {
         when(explainerServiceImpl.getById(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/v1/explainer/999"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 }
 
