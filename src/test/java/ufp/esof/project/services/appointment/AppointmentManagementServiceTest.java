@@ -19,7 +19,7 @@ import ufp.esof.project.models.Explainer;
 import ufp.esof.project.models.Student;
 import ufp.esof.project.models.enums.AppointmentStatus;
 import ufp.esof.project.repository.AppointmentRepository;
-import ufp.esof.project.repository.CourseRepo;
+import ufp.esof.project.repository.CourseRepository;
 import ufp.esof.project.repository.ExplainerRepository;
 import ufp.esof.project.repository.StudentRepository;
 
@@ -46,7 +46,7 @@ class AppointmentManagementServiceTest {
     private ExplainerRepository explainerRepository;
 
     @Mock
-    private CourseRepo courseRepository;
+    private CourseRepository courseRepository;
 
     @Mock
     private AppointmentMapper appointmentMapper;

@@ -7,6 +7,6 @@ import ufp.esof.project.models.Degree;
 import java.util.Optional;
 
 @Repository
-public interface DegreeRepo extends CrudRepository<Degree, Long> {
+public interface DegreeRepository extends CrudRepository<Degree, Long> {
     Optional<Degree> findByName(String name);
 }

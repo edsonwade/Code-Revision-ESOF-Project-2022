@@ -7,7 +7,8 @@ import ufp.esof.project.models.College;
 import java.util.Optional;
 
 @Repository
-public interface CollegeRepo extends CrudRepository<College, Long> {
+@SuppressWarnings("all")
+public interface CollegeRepository extends CrudRepository<College, Long> {
     Optional<College> findByName(String name);
 
     Optional<College> findById(Long id);

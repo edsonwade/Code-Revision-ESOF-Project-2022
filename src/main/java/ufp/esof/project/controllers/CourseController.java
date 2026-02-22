@@ -1,96 +1,61 @@
 package ufp.esof.project.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import ufp.esof.project.models.Course;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ufp.esof.project.dto.course.CourseRequestDTO;
+import ufp.esof.project.dto.course.CourseResponseDTO;
+import ufp.esof.project.exception.CourseNotFoundException;
 import ufp.esof.project.services.CourseService;
 
-import java.util.Optional;
+import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/course")
+@RequestMapping(path = "/courses")
 @RequiredArgsConstructor
+@SuppressWarnings("all")
 public class CourseController {
 
     private final CourseService courseService;
 
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Iterable<Course>> getAllCourses() {
-        return ResponseEntity.ok(this.courseService.findAllCourses());
+    public ResponseEntity<List<CourseResponseDTO>> getAllCourses() {
+        return ResponseEntity.ok(this.courseService.getAllCourses());
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Course> getCourseById(@PathVariable("id") Long id) {
-        Optional<Course> courseOptional = this.courseService.findById(id);
-        if (courseOptional.isPresent())
-            return ResponseEntity.ok(courseOptional.get());
-        throw new InvalidCourseException(id);
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<CourseResponseDTO> getCourseById(@PathVariable Long id) {
+        return this.courseService.getCourseById(id)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new CourseNotFoundException(id));
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteCourse(@PathVariable("id") Long id) {
-        boolean res = this.courseService.deleteById(id);
-        Optional<Course> optionalCourse = this.courseService.findById(id);
-        if (optionalCourse.isPresent())
-            throw new CourseNotDeletedException(optionalCourse.get().getName());
-
-        if (res)
-            return ResponseEntity.ok("Course deleted successfully!");
-        else
-            throw new InvalidCourseException(id);
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<String> deleteCourse(@PathVariable Long id) {
+        this.courseService.deleteCourse(id);
+        return ResponseEntity.ok("Course deleted successfully!");
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Course> createCourse(@RequestBody Course course) {
-        Optional<Course> optionalCourse = this.courseService.createCourse(course);
-        if (optionalCourse.isPresent())
-            return ResponseEntity.ok(optionalCourse.get());
-        throw new CourseNotCreatedException(course.getName());
+    @PostMapping("/create")
+    public ResponseEntity<CourseResponseDTO> createCourse(@Valid @RequestBody CourseRequestDTO courseRequestDTO) {
+        CourseResponseDTO createdCourse = this.courseService.createCourse(courseRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCourse);
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Course> editCourse(@PathVariable("id") Long id, @RequestBody Course course) {
-        Optional<Course> optionalCourse = this.courseService.findById(id);
-        if (optionalCourse.isEmpty())
-            throw new InvalidCourseException(id);
-
-        optionalCourse = this.courseService.editCourse(optionalCourse.get(), course, id);
-        if (optionalCourse.isPresent())
-            return ResponseEntity.ok(optionalCourse.get());
-
-        throw new CourseNotEditedException(id);
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid Course")
-    public static class InvalidCourseException extends RuntimeException {
-        public InvalidCourseException(Long id) {
-            super("The course with id " + id + " does not exist");
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Course not deleted")
-    public static class CourseNotDeletedException extends RuntimeException {
-        public CourseNotDeletedException(String name) {
-            super("The course with name \"" + name + "\" was not deleted");
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Course not created")
-    public static class CourseNotCreatedException extends RuntimeException {
-        public CourseNotCreatedException(String name) {
-            super("The course with name \"" + name + "\" was not created");
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Course not edited")
-    public static class CourseNotEditedException extends RuntimeException {
-        public CourseNotEditedException(Long id) {
-            super("The course with id \"" + id + "\" was not edited");
-        }
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<CourseResponseDTO> updateCourse(@PathVariable Long id,
+                                                          @Valid @RequestBody CourseRequestDTO courseRequestDTO) {
+        CourseResponseDTO updatedCourse = this.courseService.updateCourse(id, courseRequestDTO);
+        return ResponseEntity.ok(updatedCourse);
     }
 }

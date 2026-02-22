@@ -1,19 +1,26 @@
 package ufp.esof.project.models;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
 import ufp.esof.project.models.base.AuditableEntity;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
 
 /**
  * Organization entity representing a tenant in the multi-tenant SaaS application.
@@ -28,7 +35,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonPropertyOrder({"id", "name", "email", "description", "active"})
-@Where(clause = "deleted_at IS NULL")
+@SuppressWarnings("all")
 public class Organization extends AuditableEntity {
 
     @Id

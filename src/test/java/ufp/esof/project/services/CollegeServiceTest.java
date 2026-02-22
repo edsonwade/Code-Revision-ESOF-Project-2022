@@ -9,8 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ufp.esof.project.models.College;
 import ufp.esof.project.models.Degree;
-import ufp.esof.project.repository.CollegeRepo;
-import ufp.esof.project.repository.DegreeRepo;
+import ufp.esof.project.repository.CollegeRepository;
+import ufp.esof.project.repository.DegreeRepository;
 
 import java.util.Collections;
 import java.util.Optional;
@@ -22,18 +22,20 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CollegeService Tests")
+@SuppressWarnings("unused")
 class CollegeServiceTest {
 
     @Mock
-    private CollegeRepo collegeRepo;
+    private CollegeRepository collegeRepository;
 
     @Mock
-    private DegreeRepo degreeRepo;
+    private DegreeRepository degreeRepository;
 
     @InjectMocks
     private CollegeService collegeService;
 
     private College testCollege;
+
 
     @BeforeEach
     void setUp() {
@@ -44,27 +46,23 @@ class CollegeServiceTest {
     @Test
     @DisplayName("Should find college by id")
     void testFindById() {
-        when(collegeRepo.findById(1L)).thenReturn(Optional.of(testCollege));
-        Optional<College> opt = collegeService.findById(1L);
-        assertThat(opt).isPresent();
+        when(collegeRepository.findById(1L)).thenReturn(Optional.of(testCollege));
+        var collegeById = collegeService.getCollegeById(1L);
+        assertThat(collegeById).isPresent();
+        assertThat(collegeById.get().getName()).isEqualTo("Test College");
+        assertThat(collegeById.get().getId()).isEqualTo(1L);
+        verify(collegeRepository).findById(1L);
     }
 
-    @Test
-    @DisplayName("Should find college by name")
-    void testFindByName() {
-        when(collegeRepo.findByName("Test College")).thenReturn(Optional.of(testCollege));
-        Optional<College> opt = collegeService.findByName("Test College");
-        assertThat(opt).isPresent();
-    }
 
     @Test
     @DisplayName("Should delete college when no degrees")
     void testDeleteByIdNoDegrees() {
         testCollege.setDegrees(Collections.emptySet());
-        when(collegeRepo.findById(1L)).thenReturn(Optional.of(testCollege));
-        boolean deleted = collegeService.deleteById(1L);
+        when(collegeRepository.findById(1L)).thenReturn(Optional.of(testCollege));
+        boolean deleted = collegeService.deleteCollege(1L);
         assertThat(deleted).isTrue();
-        verify(collegeRepo).deleteById(1L);
+        verify(collegeRepository).deleteById(1L);
     }
 
     @Test
@@ -72,9 +70,9 @@ class CollegeServiceTest {
     void testDeleteByIdWithDegrees() {
         // degree set non-empty
         testCollege.getDegrees().add(new Degree("D"));
-        when(collegeRepo.findById(1L)).thenReturn(Optional.of(testCollege));
-        boolean deleted = collegeService.deleteById(1L);
+        when(collegeRepository.findById(1L)).thenReturn(Optional.of(testCollege));
+        boolean deleted = collegeService.deleteCollege(1L);
         assertThat(deleted).isFalse();
-        verify(collegeRepo, never()).deleteById(1L);
+        verify(collegeRepository, never()).deleteById(1L);
     }
 }

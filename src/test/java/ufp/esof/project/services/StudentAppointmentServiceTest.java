@@ -11,7 +11,6 @@ import ufp.esof.project.exception.AppointmentNotFoundException;
 import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Student;
 import ufp.esof.project.repository.AppointmentRepository;
-import ufp.esof.project.services.StudentAppointmentService;
 
 import java.util.HashSet;
 import java.util.Optional;

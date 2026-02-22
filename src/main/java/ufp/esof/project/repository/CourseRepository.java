@@ -7,6 +7,6 @@ import ufp.esof.project.models.Course;
 import java.util.Optional;
 
 @Repository
-public interface CourseRepo extends CrudRepository<Course, Long> {
+public interface CourseRepository extends CrudRepository<Course, Long> {
     Optional<Course> findByName(String name);
 }

@@ -2,6 +2,10 @@ spring:
   application:
     name: university-application
 
+  # Server Configuration
+  servlet:
+    context-path: /api/v1
+
   # PostgreSQL Configuration (Docker - Primary Database)
   datasource:
     url: jdbc:postgresql://postgres-primary:5432/university_db
@@ -22,7 +26,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL15Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     properties:
       hibernate:

@@ -1,30 +1,18 @@
 package ufp.esof.project.services;
 
-import ufp.esof.project.models.Appointment;
-import ufp.esof.project.models.Explainer;
-import ufp.esof.project.models.Student;
+import ufp.esof.project.dto.request.CreateAppointmentRequest;
+import ufp.esof.project.dto.response.AppointmentResponse;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
 
 public interface AppointmentService {
 
-    Set<Appointment> getSetAppointment();
+    List<AppointmentResponse> getAllAppointments();
 
+    Optional<AppointmentResponse> getAppointmentById(Long id);
 
-    Iterable<Appointment> findAll();
+    Optional<AppointmentResponse> createAppointment(CreateAppointmentRequest request);
 
-    Appointment findAppointmentById(Long id);
-
-    Optional<Explainer> findByName(String nameExplainer);
-
-    Optional<Student> findStudentById(Long id);
-
-//    AppointmentDto save(AppointmentDto Appointment);
-//
-//    ResponseEntity<AppointmentDto> saveAppointment(AppointmentDto Appointment);
-
-    boolean deleteAppointmentById(Long id);
-
+    boolean deleteAppointment(Long id);
 }

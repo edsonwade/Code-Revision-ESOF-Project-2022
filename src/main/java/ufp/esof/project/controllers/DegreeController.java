@@ -1,96 +1,64 @@
 package ufp.esof.project.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import ufp.esof.project.models.Degree;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ufp.esof.project.dto.degree.DegreeRequestDTO;
+import ufp.esof.project.dto.degree.DegreeResponseDTO;
+import ufp.esof.project.exception.DegreeNotFoundException;
 import ufp.esof.project.services.DegreeService;
 
+import java.util.List;
 import java.util.Optional;
 
-@Controller
-@RequestMapping(path = "/api/v1/degree")
+@RestController
+@RequestMapping(path = "/degrees")
 @RequiredArgsConstructor
+@SuppressWarnings("all")
 public class DegreeController {
 
     private final DegreeService degreeService;
 
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Iterable<Degree>> getAllDegrees() {
-        return ResponseEntity.ok(this.degreeService.findAllDegrees());
+    public ResponseEntity<List<DegreeResponseDTO>> getAllDegrees() {
+        return ResponseEntity.ok(this.degreeService.getAllDegrees());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Degree> getDegreeById(@PathVariable("id") Long id) {
-        Optional<Degree> optionalDegree = this.degreeService.findById(id);
-        if (optionalDegree.isPresent())
-            return ResponseEntity.ok(optionalDegree.get());
-        throw new InvalidDegreeException(id);
+    public ResponseEntity<Optional<DegreeResponseDTO>> getDegreeById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(this.degreeService.getDegreeById(id));
+
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Degree> createDegree(@RequestBody Degree degree) {
-        Optional<Degree> degreeOptional = this.degreeService.createDegree(degree);
-        if (degreeOptional.isPresent())
-            return ResponseEntity.ok(degreeOptional.get());
-        throw new DegreeNotCreatedException(degree.getName());
+    public ResponseEntity<DegreeResponseDTO> createDegree(@Valid @RequestBody DegreeRequestDTO degreeRequestDTO) {
+        var createdDegree = this.degreeService.createDegree(degreeRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDegree);
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Degree> editDegree(@PathVariable("id") Long id, @RequestBody Degree degree) {
-        Optional<Degree> degreeOptional = this.degreeService.findById(id);
-        if (degreeOptional.isEmpty())
-            throw new InvalidDegreeException(id);
-
-        degreeOptional = this.degreeService.editDegree(degreeOptional.get(), degree, id);
-        if (degreeOptional.isPresent())
-            return ResponseEntity.ok(degreeOptional.get());
-
-        throw new DegreeNotEditedException(id);
+    public ResponseEntity<DegreeResponseDTO> updateDegree(@PathVariable Long id,
+                                                          @Valid @RequestBody DegreeRequestDTO degreeRequestDTO) {
+        var updatedDegree = this.degreeService.updateDegree(id, degreeRequestDTO);
+        return ResponseEntity.ok(updatedDegree);
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteDegree(@PathVariable("id") Long id) {
-        boolean res = this.degreeService.deleteById(id);
-        Optional<Degree> degreeOptional = this.degreeService.findById(id);
-        if (degreeOptional.isPresent())
-            throw new DegreeNotDeletedException(degreeOptional.get().getName());
-
-        if (res)
+    public ResponseEntity<String> deleteDegree(@PathVariable Long id) {
+        boolean deleted = this.degreeService.deleteDegree(id);
+        if (deleted) {
             return ResponseEntity.ok("Degree deleted successfully!");
-        else
-            throw new InvalidDegreeException(id);
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Degree not created")
-    public static class DegreeNotCreatedException extends RuntimeException {
-        public DegreeNotCreatedException(String name) {
-            super("The degree with name \"" + name + "\" was not created");
         }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Degree not deleted")
-    public static class DegreeNotDeletedException extends RuntimeException {
-        public DegreeNotDeletedException(String name) {
-            super("The degree with name \"" + name + "\" was not deleted");
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid Degree")
-    public static class InvalidDegreeException extends RuntimeException {
-        public InvalidDegreeException(Long id) {
-            super("The degree with id \"" + id + "\" does not exist");
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Degree not edited")
-    public static class DegreeNotEditedException extends RuntimeException {
-        public DegreeNotEditedException(Long id) {
-            super("The degree with id \"" + id + "\" was not edited");
-        }
+        throw new DegreeNotFoundException(id);
     }
 }

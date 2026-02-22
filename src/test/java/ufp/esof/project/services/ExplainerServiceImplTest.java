@@ -7,26 +7,28 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ufp.esof.project.dto.ExplainerDto;
-import ufp.esof.project.models.Course;
+import ufp.esof.project.dto.explainer.ExplainerRequestDTO;
 import ufp.esof.project.models.Explainer;
-import ufp.esof.project.repository.CourseRepo;
+import ufp.esof.project.repository.CourseRepository;
 import ufp.esof.project.repository.ExplainerRepository;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ExplainerServiceImpl Tests")
+@SuppressWarnings("unused")
 class ExplainerServiceImplTest {
 
     @Mock
     private ExplainerRepository explainerRepository;
 
     @Mock
-    private CourseRepo courseRepo;
+    private CourseRepository courseRepository;
 
     @InjectMocks
     private ExplainerServiceImpl explainerService;
@@ -51,18 +53,25 @@ class ExplainerServiceImplTest {
     @DisplayName("Should delete explainer by id when exists")
     void testDeleteByIdExists() {
         when(explainerRepository.findById(2L)).thenReturn(Optional.of(explainer));
-        boolean result = explainerService.deleteById(2L);
+        boolean result = explainerService.deleteExplainer(2L);
         assertThat(result).isTrue();
         verify(explainerRepository).deleteById(2L);
     }
 
     @Test
-    @DisplayName("Should return empty when saving explainer with existing name")
+    @DisplayName("Should throw exception when saving explainer with existing name")
     void testSaveExplainerExistingName() {
         Explainer e = new Explainer("Test");
+
+        ExplainerRequestDTO explainerResponseDTO = new ExplainerRequestDTO();
+        explainerResponseDTO.setName("Test");
+        explainerResponseDTO.setEmail("test@gmail.com");
+
         when(explainerRepository.findByName("Test")).thenReturn(Optional.of(e));
-        Optional<Explainer> result = explainerService.saveExplainer(e);
-        assertThat(result).isEmpty();
+        
+        assertThatThrownBy(() -> explainerService.createExplainer(explainerResponseDTO))
+                .hasMessage("Explainer with name 'Test' already exists");
+        verify(explainerRepository).findByName("Test");
     }
 }
 
