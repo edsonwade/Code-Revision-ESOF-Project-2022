@@ -1,9 +1,9 @@
-# 🎓 University Management System — Premium Enterprise SaaS 🚀
+# 🎓 University Management System — Premium Enterprise  🚀
 
-[![Paco Style Verification](https://img.shields.io/badge/Scale-10/10-indigo?style=for-the-badge&logo=paco)](./walkthrough.md)
+[![High grade Style Verification](https://img.shields.io/badge/Scale-10/10-indigo?style=for-the-badge&logo=High grade)](./walkthrough.md)
 [![Build Status](https://img.shields.io/badge/Build-Passing-emerald?style=for-the-badge&logo=github-actions)](./walkthrough.md)
 
-Welcome to the **University Management System**,a high-grade, production-ready Enterprise SaaS solution designed to orchestrate academic appointments, student management, and institutional logistics with a "Paco Style" premium experience.
+Welcome to the **University Management System**,a production-ready Enterprise solution designed to orchestrate academic appointments, student management, and institutional logistics premium experience.
 
 ---
 
@@ -26,12 +26,12 @@ Welcome to the **University Management System**,a high-grade, production-ready E
 
 ---
 
-## 🛠️ Technology Stack (Paco Style)
+## 🛠️ Technology Stack (High grade Style)
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
 | **Frontend** | **React + TypeScript + Vite** | High-performance SPA with Feature-Sliced Design (FSD). |
-| **Styling** | **Tailwind CSS v4** | Premium "Paco Style" aesthetics with glassmorphism. |
+| **Styling** | **Tailwind CSS v4** | Premium "High grade Style" aesthetics with glassmorphism. |
 | **State** | **TanStack Query + Zustand** | Robust server-state caching and lightweight client-state. |
 | **Backend** | **Spring Boot 3 + Java 17** | Scalable, clean-code RESTful API with SOLID principles. |
 | **Persistence** | **PostgreSQL + MongoDB + Redis** | Relational data, flexible document storage, and high-speed caching. |
@@ -48,7 +48,7 @@ To run the full production-grade stack (Backend + Frontend + Infrastructure):
 # Clone the repository
 git clone https://github.com/edsonwade/Code-Revision-ESOF-Project-2022.git
 
-# Running the orchestration script Paco style
+# Running the orchestration script High grade style
 # Bash (Linux/Mac)
 chmod +x build-and-run.sh
 ./build-and-run.sh
@@ -62,7 +62,7 @@ chmod +x build-and-run.sh
 
 ### 🔑 Demo Credentials
 - **Email**: `demo@unimanage.edu`
-- **Password**: `PacoStyle2024`
+- **Password**: `High gradeStyle2024`
 
 ---
 
@@ -72,4 +72,4 @@ chmod +x build-and-run.sh
 - **[Final Walkthrough](./walkthrough.md)**: Detailed feature breakdown and build verification.
 
 ---
-**Crafted with 💜 and Paco Style.** 🎓
+**Crafted with 💜 and High grade Style.** 🎓
