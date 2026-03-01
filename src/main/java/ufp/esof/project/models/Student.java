@@ -1,17 +1,26 @@
 package ufp.esof.project.models;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import lombok.*;
-import org.hibernate.annotations.Where;
-
-import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import ufp.esof.project.models.base.AuditableEntity;
+import ufp.esof.project.models.enums.Role;
 
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import ufp.esof.project.models.base.AuditableEntity;
-import ufp.esof.project.models.enums.Role;
 
 @Entity
 @Getter
@@ -19,7 +28,7 @@ import ufp.esof.project.models.enums.Role;
 @NoArgsConstructor
 @Table(name = "students")
 @JsonPropertyOrder({"id", "name", "appointments"})
-@Where(clause = "deleted_at IS NULL")
+@SuppressWarnings("all")
 public class Student extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +50,7 @@ public class Student extends AuditableEntity {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Appointment> appointments = new HashSet<>();
+
 
     public Student(String name) {
         this.name = name;

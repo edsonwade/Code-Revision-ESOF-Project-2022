@@ -2,6 +2,10 @@ spring:
   application:
     name: university-application
 
+  # Server Configuration
+  servlet:
+    context-path: /api/v1
+
   # PostgreSQL Configuration (Docker - Primary Database)
   datasource:
     url: jdbc:postgresql://postgres-primary:5432/university_db
@@ -22,7 +26,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    database-platform: org.hibernate.dialect.PostgreSQL15Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
     properties:
       hibernate:
@@ -32,7 +36,7 @@ spring:
   data:
     redis:
       host: redis
-      port: 6379
+      port: 6380
       password: redis_password
       timeout: 60000ms
     mongodb:

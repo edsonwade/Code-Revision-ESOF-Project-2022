@@ -1,12 +1,14 @@
 services:
   # University management system for development
-  university-management-system-dev:
-    image: edsonwade126/university-management-system:latest
-    container_name: university-management-dev
+  university-management-system:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: university-management
     ports:
       - "8081:8080"
     depends_on:
-      postgres_dev:
+      postgres-primary:
         condition: service_healthy
       redis:
         condition: service_healthy
@@ -15,25 +17,21 @@ services:
 
     environment:
       SERVER_PORT: "8080"
+      SERVER_SERVLET_CONTEXT_PATH: "/api/v1"
       SPRING_PROFILES_ACTIVE: "docker"
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-primary:5432/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-primary:5432/university_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
-      SPRING_DATA_MONGODB_URI: mongodb://mongo-primary:27017/${MONGO_DB}
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_MAIL_HOST: ${MAIL_HOST}
-      SPRING_MAIL_PORT: ${MAIL_PORT}
-      SPRING_MAIL_USERNAME: ${MAIL_USERNAME}
-      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD}
+      SPRING_DATA_REDIS_PASSWORD: redis_password
+      SPRING_DATA_MONGODB_URI: mongodb://mongo-primary:27017/market_db
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: 1025
       MANAGEMENT_HEALTH_MAIL_ENABLED: "false"
       MANAGEMENT_ENDPOINT_HEALTH_SHOW_DETAILS: "always"
-    volumes:
-      - ./src/main/java:/app/src/main/java
-      - ./src/main/resources:/app/src/main/resources
-    env_file:
-      - .env
+    networks:
+      - university-management-net
     healthcheck:
       test:
         [
@@ -41,12 +39,12 @@ services:
           "wget",
           "-q",
           "--spider",
-          "http://localhost:8081/api/v1/actuator/health",
+          "http://localhost:8080/api/v1/actuator/health",
         ]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 40s
+      start_period: 60s
     restart: unless-stopped
     deploy:
       resources:
@@ -58,23 +56,39 @@ services:
           memory: 1024M
 
 
+  # Frontend application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=http://localhost:8081/api/v1
+    container_name: university-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      university-management-system:
+        condition: service_healthy
+    networks:
+      - university-management-net
+    restart: unless-stopped
+
       # ==================== PostgreSQL ====================
   postgres-primary:
     image: postgres:16-alpine
     container_name: postgres-primary
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: university_db
     volumes:
       - postgres-primary-data:/var/lib/postgresql/data
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     networks:
       - university-management-net
     ports:
       - "5433:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d university_db" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -91,9 +105,9 @@ services:
     image: postgres:16-alpine
     container_name: postgres-replica
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: university_db
     depends_on:
       - postgres-primary
     volumes:
@@ -103,7 +117,7 @@ services:
     ports:
       - "5435:5432"
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -118,8 +132,8 @@ services:
     container_name: postgres-test
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: market_test
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: university_db
     volumes:
       - postgres-test-data:/var/lib/postgresql/data
     networks:
@@ -135,27 +149,23 @@ services:
     depends_on:
       - postgres-primary
 
+  #====================Flyway Migration ==================
 
-  # Test Database
-  postgres_test:
-    image: postgres:16-alpine
-    container_name: postgres_test
-    ports:
-      - "5436:5432"  # Different port for test
+  flyway:
+    image: flyway/flyway
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
     environment:
-      POSTGRES_DB: ${POSTGRES_TEST_DB}
-      POSTGRES_USER: ${POSTGRES_TEST_USERNAME}
-      POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD}
+      - FLYWAY_URL=jdbc:postgresql://postgres-primary:5432/university_db
+      - FLYWAY_USER=postgres
+      - FLYWAY_PASSWORD=postgres
+      - FLYWAY_LOCATIONS=filesystem:/flyway/sql
+    volumes:
+      - ./db/migration:/flyway/sql
+    command: migrate
     networks:
       - university-management-net
-    volumes:
-      - postgres-test-data:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_TEST_USERNAME} -d ${POSTGRES_TEST_DB}" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
 
 
   # ==================== MongoDB (Single-node Replica Set, no keyfile) ====================
@@ -200,9 +210,10 @@ services:
         }
       '
 
-    # Redis container for caching
+  # Redis container for caching
   redis:
     image: redis:6.2-alpine
+    container_name: redis
     volumes:
       - redis_data:/var/lib/redis/data
     ports:
@@ -211,12 +222,13 @@ services:
       - university-management-net
     command: >
       redis-server 
+      --requirepass redis_password
       --maxmemory 256mb 
       --maxmemory-policy allkeys-lru 
       --appendonly yes
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: [ "CMD", "redis-cli", "-a", "redis_password", "ping" ]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -279,7 +291,7 @@ services:
     image: grafana/grafana:10.1.0
     container_name: grafana
     volumes:
-      - grafana-data:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
     environment:
       GF_SECURITY_ADMIN_USER: admin
@@ -308,7 +320,7 @@ volumes:
     driver: local
   postgres-test-data:
     driver: local
-  prometheus_data:
+  prometheus-data:
     driver: local
   grafana_data:
     driver: local
@@ -316,9 +328,12 @@ volumes:
     driver: local
   mongo-primary-data:
     driver: local
+  mongo-primary-config:
+    driver: local
     # Mailhog volume
   mailhog-data:
     driver: local
+
 
     # Custom network for the application
 networks:

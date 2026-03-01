@@ -1,118 +1,104 @@
 package ufp.esof.project.services;
 
-
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ufp.esof.project.dto.*;
-import ufp.esof.project.models.*;
-
-import java.util.*;
-import ufp.esof.project.repository.CourseRepo;
+import ufp.esof.project.dto.explainer.ExplainerRequestDTO;
+import ufp.esof.project.dto.explainer.ExplainerResponseDTO;
+import ufp.esof.project.exception.ExplainerAlreadyExistsException;
+import ufp.esof.project.exception.ExplainerNotFoundException;
+import ufp.esof.project.models.Explainer;
 import ufp.esof.project.repository.ExplainerRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@SuppressWarnings("unused")
 public class ExplainerServiceImpl implements ExplainerService {
-
 
     private final ExplainerRepository explainerRepository;
 
-    private final CourseRepo courseRepo;
-
-    public ExplainerServiceImpl(ExplainerRepository explainerRepository, CourseRepo courseRepo) {
+    public ExplainerServiceImpl(ExplainerRepository explainerRepository) {
         this.explainerRepository = explainerRepository;
-        this.courseRepo = courseRepo;
-    }
-
-    @Cacheable(value = "explainers", key = "#id")
-    public Optional<Explainer> getById(long id) {
-        return explainerRepository.findById(id);
-    }
-
-    public Set<Explainer> getFilteredExplainer(Object filterObject) {
-        return null;
-
-    }
-
-    @Cacheable(value = "explainers", key = "#name")
-    public Optional<Explainer> findExplainerByName(String name) {
-        return this.explainerRepository.findByName(name);
     }
 
     @Cacheable(value = "explainers", key = "'all'")
-    public Set<Explainer> findAllExplainers() {
-        Set<Explainer> explainers = new HashSet<>();
-        for (Explainer explainer : this.explainerRepository.findAll()) {
-            explainers.add(explainer);
+    @Override
+    public List<ExplainerResponseDTO> getAllExplainers() {
+        return explainerRepository.findAll().stream()
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "explainers", key = "#id")
+    @Override
+    public Optional<ExplainerResponseDTO> getExplainerById(Long id) {
+        return explainerRepository.findById(id).map(this::toResponseDTO);
+    }
+
+    @CacheEvict(value = "explainers", allEntries = true)
+    @Override
+    public ExplainerResponseDTO createExplainer(ExplainerRequestDTO explainerRequestDTO) {
+        Optional<Explainer> existingByName = explainerRepository.findByName(explainerRequestDTO.getName());
+        if (existingByName.isPresent()) {
+            throw new ExplainerAlreadyExistsException("Explainer with name '" + explainerRequestDTO.getName() + "' already exists");
         }
-        return Collections.unmodifiableSet(explainers);
-    }
+        Optional<Explainer> existingByEmail = explainerRepository.findExplainerByEmail(explainerRequestDTO.getEmail());
+        if (existingByEmail.isPresent()) {
+            throw new ExplainerAlreadyExistsException("Explainer with email '" + explainerRequestDTO.getEmail() + "' already exists");
+        }
 
-    @Override
-    @CacheEvict(value = "explainers", allEntries = true)
-    public Optional<Explainer> saveExplainer(ExplainerDto explainer) {
-        return Optional.empty();
-    }
-
-    @Override
-    @CacheEvict(value = "explainers", allEntries = true)
-    public Optional<Explainer> editExplainer(Explainer currentExplainer, ExplainerDto explainer, Long id) {
-        return Optional.empty();
-    }
-
-    @CacheEvict(value = "explainers", allEntries = true)
-    public Optional<Explainer> saveExplainer(Explainer explainer) {
         Explainer newExplainer = new Explainer();
-        Optional<Explainer> explainerOptional = this.findExplainerByName(explainer.getName());
-        if (explainerOptional.isPresent())
-            return Optional.empty();
-
-        explainerOptional = validateExplainerCourses(explainer, explainer);
-        if (explainerOptional.isPresent())
-            newExplainer = explainerOptional.get();
-
-        return Optional.of(this.explainerRepository.save(newExplainer));
+        newExplainer.setName(explainerRequestDTO.getName());
+        newExplainer.setEmail(explainerRequestDTO.getEmail());
+        Explainer saved = explainerRepository.save(newExplainer);
+        return toResponseDTO(saved);
     }
 
     @CacheEvict(value = "explainers", allEntries = true)
-    public Optional<Explainer> editExplainer(Explainer currentExplainer, Explainer explainer, Long id) {
-        Explainer newExplainer = new Explainer();
-        Optional<Explainer> optionalExplainer = validateExplainerCourses(currentExplainer, explainer);
-        if (optionalExplainer.isPresent())
-            newExplainer = optionalExplainer.get();
-
-        optionalExplainer = this.explainerRepository.findByName(explainer.getName());
-        if (optionalExplainer.isPresent() && (!optionalExplainer.get().getId().equals(id)))
-            return Optional.empty();
-
-        newExplainer.setName(explainer.getName());
-
-        return Optional.of(this.explainerRepository.save(newExplainer));
+    @Override
+    public ExplainerResponseDTO updateExplainer(Long id, ExplainerRequestDTO explainerRequestDTO) {
+        Optional<Explainer> optionalExplainer = Optional.of(explainerRepository.findById(id)
+                .orElseThrow(() -> new ExplainerNotFoundException("Explainer not found with id " + id)));
+        Explainer explainer = optionalExplainer.get();
+        explainer.setName(explainerRequestDTO.getName());
+        explainer.setEmail(explainerRequestDTO.getEmail());
+        Explainer saved = explainerRepository.save(explainer);
+        return toResponseDTO(saved);
     }
 
+
     @CacheEvict(value = "explainers", allEntries = true)
-    public boolean deleteById(Long id) {
-        Optional<Explainer> optionalExplainer = this.getById(id);
+    @Override
+    public boolean deleteExplainer(Long id) {
+        Optional<Explainer> optionalExplainer = explainerRepository.findById(id);
         if (optionalExplainer.isPresent()) {
-            this.explainerRepository.deleteById(id);
+            explainerRepository.deleteById(id);
             return true;
         }
         return false;
     }
 
-    public Optional<Explainer> validateExplainerCourses(Explainer currentExplainer, Explainer explainer) {
-        Set<Course> newCourses = new HashSet<>();
-        for (Course course : explainer.getCourses()) {
-            Optional<Course> optionalCourse = this.courseRepo.findByName(course.getName());
-            if (optionalCourse.isEmpty())
-                return Optional.empty();
-            Course foundCourse = optionalCourse.get();
-            foundCourse.addExplainer(currentExplainer);
-            newCourses.add(foundCourse);
-        }
-        currentExplainer.setCourses(newCourses);
-        return Optional.of(currentExplainer);
+    public Optional<Explainer> getById(long id) {
+        return explainerRepository.findById(id);
+    }
+
+    public Optional<Explainer> findExplainerByName(String name) {
+        return Optional.of(explainerRepository.findByName(name)
+                .orElseThrow(() -> new ExplainerNotFoundException("Explainer not found with name " + name)));
+    }
+
+    private ExplainerResponseDTO toResponseDTO(Explainer explainer) {
+        return ExplainerResponseDTO.builder()
+                .id(explainer.getId())
+                .name(explainer.getName())
+                .email(explainer.getEmail())
+                .createdAt(explainer.getCreatedAt())
+                .updatedAt(explainer.getUpdatedAt())
+                .build();
     }
 }

@@ -4,34 +4,36 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ufp.esof.project.models.Degree;
-import ufp.esof.project.repository.DegreeRepo;
+import ufp.esof.project.repository.CollegeRepository;
+import ufp.esof.project.repository.DegreeRepository;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("DegreeService Tests")
 class DegreeServiceTest {
 
     @Mock
-    private DegreeRepo degreeRepo;
+    private DegreeRepository degreeRepository;
 
     @Mock
-    private CollegeService collegeService;
+    private CollegeRepository collegeRepository;
 
-    @InjectMocks
-    private DegreeService degreeService;
+    private DegreeServiceImpl degreeService;
 
     private Degree testDegree;
 
     @BeforeEach
     void setUp() {
+        degreeService = new DegreeServiceImpl(degreeRepository, collegeRepository);
         testDegree = new Degree("Test Degree");
         testDegree.setId(1L);
     }
@@ -39,33 +41,40 @@ class DegreeServiceTest {
     @Test
     @DisplayName("Should find degree by id")
     void testFindById() {
-        when(degreeRepo.findById(1L)).thenReturn(Optional.of(testDegree));
-        Optional<Degree> opt = degreeService.findById(1L);
-        assertThat(opt).isPresent();
+        when(degreeRepository.findById(1L)).thenReturn(Optional.of(testDegree));
+        var degreeServiceById = degreeService.getDegreeById(1L);
+        assertThat(degreeServiceById).isPresent();
+        assertThat(degreeServiceById.get().getId()).isEqualTo(1L);
+        assertThat(degreeServiceById.get().getName()).isEqualTo("Test Degree");
+        verify(degreeRepository, atLeastOnce()).findById(1L);
+
     }
 
     @Test
     @DisplayName("Should find degree by name")
     void testFindByName() {
-        when(degreeRepo.findByName("Test Degree")).thenReturn(Optional.of(testDegree));
-        Optional<Degree> opt = degreeService.findByName("Test Degree");
-        assertThat(opt).isPresent();
+        when(degreeRepository.findByName("Test Degree")).thenReturn(Optional.of(testDegree));
+        var degreeByName = degreeService.getDegreeByName("Test Degree");
+        assertThat(degreeByName).isPresent();
+        assertThat(degreeByName.get().getId()).isEqualTo(1L);
+        assertThat(degreeByName.get().getName()).isEqualTo("Test Degree");
+        verify(degreeRepository, atLeastOnce()).findByName("Test Degree");
     }
 
     @Test
     @DisplayName("Should delete degree by id when exists")
     void testDeleteByIdExists() {
-        when(degreeRepo.findById(1L)).thenReturn(Optional.of(testDegree));
-        boolean deleted = degreeService.deleteById(1L);
+        when(degreeRepository.findById(1L)).thenReturn(Optional.of(testDegree));
+        boolean deleted = degreeService.deleteDegree(1L);
         assertThat(deleted).isTrue();
-        verify(degreeRepo).deleteById(1L);
+        verify(degreeRepository).deleteById(1L);
     }
 
     @Test
     @DisplayName("Should not delete degree when not exists")
     void testDeleteByIdNotExists() {
-        when(degreeRepo.findById(999L)).thenReturn(Optional.empty());
-        boolean deleted = degreeService.deleteById(999L);
+        when(degreeRepository.findById(999L)).thenReturn(Optional.empty());
+        boolean deleted = degreeService.deleteDegree(999L);
         assertThat(deleted).isFalse();
     }
 }

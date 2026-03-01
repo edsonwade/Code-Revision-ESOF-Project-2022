@@ -1,13 +1,21 @@
 package ufp.esof.project.repository;
 
-import java.time.DayOfWeek;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ufp.esof.project.models.Availability;
 
+import java.time.DayOfWeek;
+import java.util.List;
+import java.util.Optional;
+
 @Repository
+@SuppressWarnings("all")
 public interface AvailabilityRepository extends JpaRepository<Availability, Long> {
     List<Availability> findByExplainerIdAndDayOfWeek(Long explainerId, DayOfWeek dayOfWeek);
+
+    @Query("SELECT a FROM Availability a WHERE a.id = :id")
+    Optional<Availability> findByAvailabilityById(@Param("id") Long id);
 
 }

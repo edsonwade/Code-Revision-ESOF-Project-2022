@@ -1,8 +1,5 @@
 package ufp.esof.project.services;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,19 +7,29 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ufp.esof.project.dto.student.StudentRequestDTO;
+import ufp.esof.project.dto.student.StudentResponseDTO;
 import ufp.esof.project.exception.StudentNotFoundException;
 import ufp.esof.project.models.Appointment;
 import ufp.esof.project.models.Student;
 import ufp.esof.project.repository.StudentRepository;
 
-import static org.assertj.core.api.Assertions.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("StudentService Tests")
-
+@SuppressWarnings("unused")
 class StudentServiceTest {
     @Mock
     private StudentRepository studentRepository;
@@ -49,23 +56,23 @@ class StudentServiceTest {
         student2.setId(2L);
         student2.setEmail("another@test.com");
 
-        when(studentRepository.findAll()).thenReturn(List.of(testStudent, student2));
+        when(studentRepository.findAllStudents()).thenReturn(List.of(testStudent, student2));
 
-        Iterable<Student> result = studentService.getAllStudents();
+        var result = studentService.getAllStudents();
 
         assertThat(result).isNotNull().hasSize(2);
-        verify(studentRepository).findAll();
+        verify(studentRepository).findAllStudents();
     }
 
     @Test
     @DisplayName("Should return empty list when no students exist")
     void testGetAllStudentsEmpty() {
-        when(studentRepository.findAll()).thenReturn(Collections.emptyList());
+        when(studentRepository.findAllStudents()).thenReturn(Collections.emptyList());
 
-        Iterable<Student> result = studentService.getAllStudents();
+        var result = studentService.getAllStudents();
 
         assertThat(result).isEmpty();
-        verify(studentRepository).findAll();
+        verify(studentRepository).findAllStudents();
     }
 
     @Test
@@ -73,12 +80,16 @@ class StudentServiceTest {
     void testGetStudentByIdSuccess() {
         when(studentRepository.findById(1L)).thenReturn(Optional.of(testStudent));
 
-        Student result = studentService.getStudentById(1L);
+        var result = studentService.getStudentById(1L);
 
         assertThat(result)
                 .isNotNull()
-                .extracting(Student::getId, Student::getName, Student::getEmail)
-                .containsExactly(1L, "Test Student", "student@test.com");
+                .isInstanceOf(Optional.class)
+                .hasValueSatisfying(studentResponseDTO -> {
+                    assertThat(studentResponseDTO.getId()).isEqualTo(1L);
+                    assertThat(studentResponseDTO.getName()).isEqualTo("Test Student");
+                    assertThat(studentResponseDTO.getEmail()).isEqualTo("student@test.com");
+                });
         verify(studentRepository).findById(1L);
     }
 
@@ -98,38 +109,49 @@ class StudentServiceTest {
     void testGetStudentByNameSuccess() {
         when(studentRepository.findByName("Test Student")).thenReturn(Optional.of(testStudent));
 
-        Student result = studentService.getStudentByName("Test Student");
+        var result = studentService.getStudentByName("Test Student");
 
         assertThat(result)
                 .isNotNull()
-                .extracting(Student::getName)
-                .isEqualTo("Test Student");
+                .isPresent()
+                .hasValueSatisfying(studentResponseDTO -> {
+                    assertThat(studentResponseDTO.getId()).isEqualTo(1L);
+                    assertThat(studentResponseDTO.getEmail()).isEqualTo("student@test.com");
+                });
         verify(studentRepository).findByName("Test Student");
     }
+
 
     @Test
     @DisplayName("Should throw StudentNotFoundException when student name does not exist")
     void testGetStudentByNameNotFound() {
-        when(studentRepository.findByName("NonExistent")).thenReturn(Optional.empty());
+        when(studentRepository.findByName("")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> studentService.getStudentByName("NonExistent"))
+        assertThatThrownBy(() -> studentService.getStudentByName(""))
                 .isInstanceOf(StudentNotFoundException.class)
-                .hasMessageContaining("NonExistent");
+                .hasMessageContaining("");
     }
 
     @Test
     @DisplayName("Should create student successfully with valid data")
     void testCreateStudentSuccess() {
         Student newStudent = new Student("New Student");
+        newStudent.setId(1L);
+        newStudent.setName("New Student");
         newStudent.setEmail("new@test.com");
+
+        var requestDTO = StudentRequestDTO.builder()
+                .name("New Student")
+                .email("new@test.com")
+                .build();
 
         when(studentRepository.save(any(Student.class))).thenReturn(testStudent);
 
-        Student result = studentService.createStudent(newStudent);
+        var result = studentService.createStudent(requestDTO);
 
         assertThat(result)
                 .isNotNull()
-                .extracting(Student::getId)
+                .extracting(StudentResponseDTO::getId)
                 .isEqualTo(1L);
         verify(studentRepository).save(any(Student.class));
     }
@@ -143,7 +165,10 @@ class StudentServiceTest {
         when(studentRepository.save(any(Student.class)))
                 .thenThrow(new RuntimeException("Duplicate key"));
 
-        assertThatThrownBy(() -> studentService.createStudent(newStudent))
+        assertThatThrownBy(() -> studentService.createStudent(StudentRequestDTO.builder()
+                .name("Another Student")
+                .email("student@test.com")
+                .build()))
                 .isInstanceOf(Exception.class);
         verify(studentRepository).save(any(Student.class));
     }
@@ -154,10 +179,15 @@ class StudentServiceTest {
         Student updatedData = new Student("Updated Student");
         updatedData.setEmail("updated@test.com");
 
+        var requestDTO = StudentRequestDTO.builder()
+                .name("New Student")
+                .email("new@test.com")
+                .build();
+
         when(studentRepository.findById(1L)).thenReturn(Optional.of(testStudent));
         when(studentRepository.save(any(Student.class))).thenReturn(testStudent);
 
-        Student result = studentService.updateStudent(1L, updatedData);
+        var result = studentService.updateStudent(1L, requestDTO);
 
         assertThat(result).isNotNull();
         verify(studentRepository).findById(1L);
@@ -169,10 +199,14 @@ class StudentServiceTest {
     void testUpdateStudentNotFound() {
         Student updatedData = new Student("Updated");
         updatedData.setEmail("updated@test.com");
+        var requestDTO = StudentRequestDTO.builder()
+                .name("New Student")
+                .email("new@test.com")
+                .build();
 
         when(studentRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> studentService.updateStudent(999L, updatedData))
+        assertThatThrownBy(() -> studentService.updateStudent(999L, requestDTO))
                 .isInstanceOf(StudentNotFoundException.class)
                 .hasMessageContaining("999");
         verify(studentRepository).findById(999L);
@@ -180,7 +214,7 @@ class StudentServiceTest {
 
     @Test
     @DisplayName("Should delete student successfully when no appointments exist")
-    void testDeleteStudentByIdSuccess() {
+    void testdeleteStudentByIdByIdSuccess() {
         testStudent.getAppointments().clear();
 
         when(studentRepository.findById(1L)).thenReturn(Optional.of(testStudent));
@@ -194,10 +228,10 @@ class StudentServiceTest {
 
     @Test
     @DisplayName("Should return false when deleting student with existing appointments")
-    void testDeleteStudentWithAppointmentsFails() {
+    void testdeleteStudentByIdWithAppointmentsFails() {
         Appointment testAppointment = new Appointment();
         testStudent.getAppointments().add(testAppointment);
-        
+
         when(studentRepository.findById(1L)).thenReturn(Optional.of(testStudent));
 
         boolean result = studentService.deleteStudentById(1L);
@@ -209,7 +243,7 @@ class StudentServiceTest {
 
     @Test
     @DisplayName("Should throw StudentNotFoundException when deleting non-existent student")
-    void testDeleteStudentNotFound() {
+    void testdeleteStudentByIdNotFound() {
         when(studentRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> studentService.deleteStudentById(999L))
@@ -220,7 +254,7 @@ class StudentServiceTest {
 
     @Test
     @DisplayName("Should verify student repository is called for deletion")
-    void testDeleteStudentInteraction() {
+    void testdeleteStudentByIdInteraction() {
         testStudent.getAppointments().clear();
 
         when(studentRepository.findById(1L)).thenReturn(Optional.of(testStudent));

@@ -3,15 +3,26 @@ package ufp.esof.project.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Where;
+import ufp.esof.project.models.base.AuditableEntity;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
-import ufp.esof.project.models.base.AuditableEntity;
 
 @Getter
 @Setter
@@ -20,7 +31,7 @@ import ufp.esof.project.models.base.AuditableEntity;
 @Table(name = "availabilities")
 @JsonPropertyOrder({"id", "dayOfWeek", "start", "end", "explainer"})
 @NoArgsConstructor
-@Where(clause = "deleted_at IS NULL")
+@SuppressWarnings("all")
 public class Availability extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,25 +43,25 @@ public class Availability extends AuditableEntity {
 
     @Column(nullable = false)
     @JsonFormat(pattern = "HH:mm:ss")
-    private LocalTime start;
+    private LocalDateTime start;
 
     @Column(nullable = false)
     @JsonFormat(pattern = "HH:mm:ss")
-    private LocalTime end;
+    private LocalDateTime end;
 
     @ManyToOne
     @JoinColumn(name = "explainer_id")
     @JsonBackReference
     private Explainer explainer;
 
-    public Availability(DayOfWeek dayOfWeek, LocalTime start, LocalTime end) {
+    public Availability(DayOfWeek dayOfWeek, LocalDateTime start, LocalDateTime end) {
         validateTimeRange(start, end);
         this.dayOfWeek = dayOfWeek;
         this.start = start;
         this.end = end;
     }
 
-    private void validateTimeRange(LocalTime start, LocalTime end) {
+    private void validateTimeRange(LocalDateTime start, LocalDateTime end) {
         if (start == null || end == null) {
             throw new IllegalArgumentException("Start and end times cannot be null");
         }
@@ -76,8 +87,8 @@ public class Availability extends AuditableEntity {
             return false;
         }
 
-        LocalTime appointmentStart = appointment.getStartTime().toLocalTime();
-        LocalTime appointmentEnd = appointment.getExpectedEndTime().toLocalTime();
+        LocalDateTime appointmentStart = appointment.getStartTime();
+        LocalDateTime appointmentEnd = appointment.getExpectedEndTime();
         return isWithinTimeRange(appointmentStart, appointmentEnd);
     }
 
@@ -88,7 +99,7 @@ public class Availability extends AuditableEntity {
      * @param end   the end time to check
      * @return true if the time range is within this availability slot, false otherwise
      */
-    private boolean isWithinTimeRange(LocalTime start, LocalTime end) {
+    private boolean isWithinTimeRange(LocalDateTime start, LocalDateTime end) {
         return (this.start.equals(start) || this.start.isBefore(start)) &&
                 (this.end.equals(end) || this.end.isAfter(end));
     }

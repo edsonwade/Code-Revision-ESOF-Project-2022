@@ -21,7 +21,8 @@ import ufp.esof.project.dto.ReviewResponseDTO;
 import ufp.esof.project.services.ReviewService;
 
 @RestController
-@RequestMapping("/api/v1/reviews")
+@RequestMapping("/reviews")
+@SuppressWarnings("all")
 public class ReviewController {
 
     private final ReviewService reviewService;

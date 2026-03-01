@@ -16,7 +16,24 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import ufp.esof.project.exception.*;
+import ufp.esof.project.exception.CourseAlreadyExistsException;
+import ufp.esof.project.exception.CourseNotFoundException;
+import ufp.esof.project.exception.CourseUpdateFailedException;
+import ufp.esof.project.exception.DegreeAlreadyExistsException;
+import ufp.esof.project.exception.DegreeNotFoundException;
+import ufp.esof.project.exception.DegreeUpdateFailedException;
+import ufp.esof.project.exception.DuplicateStudentException;
+import ufp.esof.project.exception.ExplainerNotFoundException;
+import ufp.esof.project.exception.InvalidCollegeException;
+import ufp.esof.project.exception.ResourceNotFoundException;
+import ufp.esof.project.exception.StudentHasAppointmentsException;
+import ufp.esof.project.exception.StudentNotFoundException;
+import ufp.esof.project.exception.appointmentexception.AppointmentNotEditedException;
+import ufp.esof.project.exception.appointmentexception.AppointmentNotFoundException;
+import ufp.esof.project.exception.availabilityexception.AvailabilityNotDeletedException;
+import ufp.esof.project.exception.availabilityexception.AvailabilityNotFoundException;
+import ufp.esof.project.exception.college_exception.CollegeBadRequestException;
+import ufp.esof.project.exception.college_exception.CollegeNotFoundException;
 import ufp.esof.project.exception.dto.ErrorResponse;
 
 import java.time.LocalDateTime;
@@ -29,6 +46,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestControllerAdvice
+@SuppressWarnings("unused")
 public class GlobalExceptionHandler {
 
     /**
@@ -104,6 +122,66 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
                 .error("Explainer Not Found")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Handle college not found exceptions.
+     */
+    @ExceptionHandler(CollegeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCollegeNotFound(
+            CollegeNotFoundException ex,
+            WebRequest request) {
+        log.warn("College not found: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("College Not Found")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * Handle college bad request exceptions.
+     */
+    @ExceptionHandler(CollegeBadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleCollegeBadRequest(
+            CollegeBadRequestException ex,
+            WebRequest request) {
+        log.warn("College bad request: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handle availability not found exceptions.
+     */
+    @ExceptionHandler(AvailabilityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAvailabilityNotFound(
+            AvailabilityNotFoundException ex,
+            WebRequest request) {
+        log.warn("Availability not found: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("Availability Not Found")
                 .message(ex.getMessage())
                 .path(request.getDescription(false).replace("uri=", ""))
                 .build();
@@ -199,32 +277,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    /**
-     * Handle invalid availability exceptions.
-     */
-    @ExceptionHandler(ufp.esof.project.controllers.AvailabilityController.InvalidAvailabilityException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidAvailability(
-            ufp.esof.project.controllers.AvailabilityController.InvalidAvailabilityException ex,
-            WebRequest request) {
-        log.warn("Invalid availability: {}", ex.getMessage());
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error("Not Found")
-                .message(ex.getMessage())
-                .path(request.getDescription(false).replace("uri=", ""))
-                .build();
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
 
     /**
      * Handle invalid college exceptions.
      */
-    @ExceptionHandler(ufp.esof.project.controllers.CollegeController.InvalidCollegeException.class)
+    @ExceptionHandler(InvalidCollegeException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCollege(
-            ufp.esof.project.controllers.CollegeController.InvalidCollegeException ex,
+            InvalidCollegeException ex,
             WebRequest request) {
         log.warn("Invalid college: {}", ex.getMessage());
 
@@ -239,14 +298,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+
+
+
     /**
-     * Handle invalid course exceptions.
+     * Handle degree not found exceptions.
      */
-    @ExceptionHandler(ufp.esof.project.controllers.CourseController.InvalidCourseException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidCourse(
-            ufp.esof.project.controllers.CourseController.InvalidCourseException ex,
+    @ExceptionHandler(DegreeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleDegreeNotFound(
+            DegreeNotFoundException ex,
             WebRequest request) {
-        log.warn("Invalid course: {}", ex.getMessage());
+        log.warn("Degree not found: {}", ex.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -260,13 +322,53 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle invalid explainer exceptions.
+     * Handle degree already exists exceptions.
      */
-    @ExceptionHandler(ufp.esof.project.controllers.ExplainerController.InvalidExplainerException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidExplainer(
-            ufp.esof.project.controllers.ExplainerController.InvalidExplainerException ex,
+    @ExceptionHandler(DegreeAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleDegreeAlreadyExists(
+            DegreeAlreadyExistsException ex,
             WebRequest request) {
-        log.warn("Invalid explainer: {}", ex.getMessage());
+        log.warn("Degree already exists: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Conflict")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+
+    /**
+     * Handle degree update failed exceptions.
+     */
+    @ExceptionHandler(DegreeUpdateFailedException.class)
+    public ResponseEntity<ErrorResponse> handleDegreeUpdateFailed(
+            DegreeUpdateFailedException ex,
+            WebRequest request) {
+        log.warn("Degree update failed: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handle course not found exceptions.
+     */
+    @ExceptionHandler(CourseNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCourseNotFound(
+            CourseNotFoundException ex,
+            WebRequest request) {
+        log.warn("Course not found: {}", ex.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -280,24 +382,86 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handle invalid degree exceptions.
+     * Handle course already exists exceptions.
      */
-    @ExceptionHandler(ufp.esof.project.controllers.DegreeController.InvalidDegreeException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidDegree(
-            ufp.esof.project.controllers.DegreeController.InvalidDegreeException ex,
+    @ExceptionHandler(CourseAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleCourseAlreadyExists(
+            CourseAlreadyExistsException ex,
             WebRequest request) {
-        log.warn("Invalid degree: {}", ex.getMessage());
+        log.warn("Course already exists: {}", ex.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
-                .status(HttpStatus.NOT_FOUND.value())
-                .error("Not Found")
+                .status(HttpStatus.CONFLICT.value())
+                .error("Conflict")
                 .message(ex.getMessage())
                 .path(request.getDescription(false).replace("uri=", ""))
                 .build();
 
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
+
+    /**
+     * Handle course update failed exceptions.
+     */
+    @ExceptionHandler(CourseUpdateFailedException.class)
+    public ResponseEntity<ErrorResponse> handleCourseUpdateFailed(
+            CourseUpdateFailedException ex,
+            WebRequest request) {
+        log.warn("Course update failed: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handle availability not deleted exceptions.
+     */
+    @ExceptionHandler(AvailabilityNotDeletedException.class)
+    public ResponseEntity<ErrorResponse> handleAvailabilityNotDeleted(
+            AvailabilityNotDeletedException ex,
+            WebRequest request) {
+        log.warn("Availability not deleted: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Handle appointment not edited exceptions.
+     */
+    @ExceptionHandler(AppointmentNotEditedException.class)
+    public ResponseEntity<ErrorResponse> handleAppointmentNotEdited(
+            AppointmentNotEditedException ex,
+            WebRequest request) {
+        log.warn("Appointment not edited: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message(ex.getMessage())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    // ========== Generic Exception Handler ==========
 
     /**
      * Handle generic exceptions.
@@ -317,5 +481,17 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // Helper method
+    private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String error, String message, WebRequest request) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status.value())
+                .error(error)
+                .message(message)
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+        return new ResponseEntity<>(errorResponse, status);
     }
 }

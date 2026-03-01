@@ -3,17 +3,25 @@ package ufp.esof.project.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import lombok.*;
-import org.hibernate.annotations.Where;
-
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import ufp.esof.project.models.base.AuditableEntity;
+import ufp.esof.project.models.enums.AppointmentStatus;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import ufp.esof.project.models.base.AuditableEntity;
-import ufp.esof.project.models.enums.AppointmentStatus;
 
 
 @Entity
@@ -22,7 +30,7 @@ import ufp.esof.project.models.enums.AppointmentStatus;
 @NoArgsConstructor
 @Table(name = "appointments")
 @JsonPropertyOrder({"id", "student", "explainer", "course", "startTime", "expectedEndTime", "status"})
-@Where(clause = "deleted_at IS NULL")
+@SuppressWarnings("all")
 public class Appointment extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

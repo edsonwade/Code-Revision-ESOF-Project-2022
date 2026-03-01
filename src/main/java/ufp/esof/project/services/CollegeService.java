@@ -1,104 +1,136 @@
 package ufp.esof.project.services;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ufp.esof.project.dto.college.CollegeRequestDTO;
+import ufp.esof.project.dto.college.CollegeResponseDTO;
 import ufp.esof.project.models.College;
 import ufp.esof.project.models.Degree;
-import ufp.esof.project.repository.CollegeRepo;
-import ufp.esof.project.repository.DegreeRepo;
+import ufp.esof.project.repository.CollegeRepository;
+import ufp.esof.project.repository.DegreeRepository;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 @Transactional
-public class CollegeService {
+public class CollegeService implements CollegeServiceInterface {
 
-    private final CollegeRepo collegeRepo;
+    private final CollegeRepository collegeRepository;
+    private final DegreeRepository degreeRepository;
 
-    private final DegreeRepo degreeRepo;
-
-    public CollegeService(CollegeRepo collegeRepo, DegreeRepo degreeRepo) {
-        this.collegeRepo = collegeRepo;
-        this.degreeRepo = degreeRepo;
+    public CollegeService(CollegeRepository collegeRepository, DegreeRepository degreeRepository) {
+        this.collegeRepository = collegeRepository;
+        this.degreeRepository = degreeRepository;
     }
 
-    @Cacheable(value = "colleges", key = "#id")
-    public Optional<College> findById(Long id) {
-        return this.collegeRepo.findById(id);
-    }
-
-    @Cacheable(value = "colleges", key = "#name")
-    public Optional<College> findByName(String name) {
-        return this.collegeRepo.findByName(name);
-    }
-
+    @Override
     @Cacheable(value = "colleges", key = "'all'")
-    public Iterable<College> getAllColleges() {
-        return this.collegeRepo.findAll();
+    public List<CollegeResponseDTO> getAllColleges() {
+        Iterable<College> colleges = collegeRepository.findAll();
+        return StreamSupport.stream(colleges.spliterator(), false)
+                .map(this::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
-    @CacheEvict(value = "colleges", allEntries = true)
-    public boolean deleteById(Long id) {
-        Optional<College> optionalCollege = this.findById(id);
-        if (optionalCollege.isPresent()) {
-            if (optionalCollege.get().getDegrees().isEmpty())
-                this.collegeRepo.deleteById(id);
-            else
-                return false;
-
-            return true;
-        }
-        return false;
+    @Override
+    @Cacheable(value = "colleges", key = "#id")
+    public Optional<CollegeResponseDTO> getCollegeById(Long id) {
+        return collegeRepository.findById(id).map(this::toResponseDTO);
     }
 
+    @Override
     @CacheEvict(value = "colleges", allEntries = true)
-    public Optional<College> createCollege(College college) {
-        College newCollege = new College();
-
-        Optional<College> optionalCollege = this.validateDegrees(college, college);
-        if (optionalCollege.isPresent())
-            newCollege = optionalCollege.get();
-
-        optionalCollege = this.collegeRepo.findByName(college.getName());
-        if (optionalCollege.isPresent())
+    public Optional<CollegeResponseDTO> createCollege(CollegeRequestDTO collegeRequest) {
+        if (collegeRepository.findByName(collegeRequest.getName()).isPresent()) {
             return Optional.empty();
-
-        newCollege.setName(college.getName());
-
-        return Optional.of(this.collegeRepo.save(newCollege));
-    }
-
-    @CacheEvict(value = "colleges", allEntries = true)
-    public Optional<College> editCollege(College currentCollege, College college, Long id) {
-        College newCollege = new College();
-        Optional<College> optionalCollege = this.validateDegrees(currentCollege, college);
-        if (optionalCollege.isPresent())
-            newCollege = optionalCollege.get();
-
-        optionalCollege = this.collegeRepo.findByName(college.getName());
-        if (optionalCollege.isPresent() && (!optionalCollege.get().getId().equals(id)))
-            return Optional.empty();
-
-        newCollege.setName(college.getName());
-
-        return Optional.of(this.collegeRepo.save(newCollege));
-    }
-
-    public Optional<College> validateDegrees(College currentCollege, College college) {
-        Set<Degree> newDegrees = new HashSet<>();
-        for (Degree degree : college.getDegrees()) {
-            Optional<Degree> optionalDegree = this.degreeRepo.findByName(degree.getName());
-            if (optionalDegree.isEmpty())
-                return Optional.empty();
-            Degree foundDegree = optionalDegree.get();
-            foundDegree.setCollege(currentCollege);
-            newDegrees.add(foundDegree);
         }
 
-        currentCollege.setDegrees(newDegrees);
-        return Optional.of(currentCollege);
+        College college = new College();
+        college.setName(collegeRequest.getName());
+        college.setOrganizationId(1L);
+
+        if (collegeRequest.getDegreeIds() != null && !collegeRequest.getDegreeIds().isEmpty()) {
+            validateDegree(collegeRequest, college);
+        }
+
+        College saved = collegeRepository.save(college);
+        return Optional.of(toResponseDTO(saved));
+    }
+
+
+
+    @Override
+    @CacheEvict(value = "colleges", allEntries = true)
+    public Optional<CollegeResponseDTO> updateCollege(Long id, CollegeRequestDTO collegeRequest) {
+        Optional<College> existingOpt = collegeRepository.findById(id);
+        if (existingOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        College college = existingOpt.get();
+
+        Optional<College> byName = collegeRepository.findByName(collegeRequest.getName());
+        if (byName.isPresent() && !byName.get().getId().equals(id)) {
+            return Optional.empty();
+        }
+        college.setName(collegeRequest.getName());
+
+        if (collegeRequest.getDegreeIds() != null) {
+            validateDegree(collegeRequest, college);
+        }
+
+        College saved = collegeRepository.save(college);
+        return Optional.of(toResponseDTO(saved));
+    }
+
+    @Override
+    @CacheEvict(value = "colleges", allEntries = true)
+    public boolean deleteCollege(Long id) {
+        Optional<College> collegeOpt = collegeRepository.findById(id);
+        if (collegeOpt.isEmpty()) {
+            return false;
+        }
+        College college = collegeOpt.get();
+        if (!college.getDegrees().isEmpty()) {
+            return false;
+        }
+        collegeRepository.deleteById(id);
+        return true;
+    }
+
+    private CollegeResponseDTO toResponseDTO(College college) {
+        Set<CollegeResponseDTO.DegreeResponseDTO> degreeDTOs = college.getDegrees().stream()
+                .map(degree -> CollegeResponseDTO.DegreeResponseDTO.builder()
+                        .id(degree.getId())
+                        .name(degree.getName())
+                        .build())
+                .collect(Collectors.toSet());
+
+        return CollegeResponseDTO.builder()
+                .id(college.getId())
+                .name(college.getName())
+                .organizationId(college.getOrganizationId())
+                .degrees(degreeDTOs)
+                .createdAt(college.getCreatedAt())
+                .updatedAt(college.getUpdatedAt())
+                .build();
+    }
+    private void validateDegree(CollegeRequestDTO collegeRequest, College college) {
+        Set<Degree> degrees = new HashSet<>();
+        for (Long degreeId : collegeRequest.getDegreeIds()) {
+            Optional<Degree> degreeOpt = degreeRepository.findById(degreeId);
+            degreeOpt.ifPresent(degree -> {
+                degree.setCollege(college);
+                degrees.add(degree);
+            });
+        }
+        college.setDegrees(degrees);
     }
 }

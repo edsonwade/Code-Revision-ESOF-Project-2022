@@ -1,23 +1,20 @@
 package ufp.esof.project.services;
 
+import ufp.esof.project.dto.explainer.ExplainerRequestDTO;
+import ufp.esof.project.dto.explainer.ExplainerResponseDTO;
+
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import ufp.esof.project.dto.ExplainerDto;
-import ufp.esof.project.models.Explainer;
 
 public interface ExplainerService {
 
-    Optional<Explainer> getById(long id);
+    List<ExplainerResponseDTO> getAllExplainers();
 
-    Set<Explainer> getFilteredExplainer(Object filterObject);
+    Optional<ExplainerResponseDTO> getExplainerById(Long id);
 
-    Optional<Explainer> findExplainerByName(String name);
+   ExplainerResponseDTO createExplainer(ExplainerRequestDTO explainerRequestDTO);
 
-    Set<Explainer> findAllExplainers();
+    ExplainerResponseDTO updateExplainer(Long id, ExplainerRequestDTO explainerRequestDTO);
 
-    Optional<Explainer> saveExplainer(ExplainerDto explainer);
-
-    Optional<Explainer> editExplainer(Explainer currentExplainer, ExplainerDto explainer, Long id);
-
-    boolean deleteById(Long id);
+    boolean deleteExplainer(Long id);
 }

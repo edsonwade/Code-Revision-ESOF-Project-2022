@@ -1,73 +1,62 @@
 package ufp.esof.project.controllers;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ufp.esof.project.exception.appointmentexception.InvalidAppointmentException;
-import ufp.esof.project.models.Appointment;
-import ufp.esof.project.services.AppointmentServiceImpl;
+import ufp.esof.project.dto.request.CreateAppointmentRequest;
+import ufp.esof.project.dto.response.AppointmentResponse;
+import ufp.esof.project.services.AppointmentService;
+
+import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/appointment")
+@RequestMapping(path = "/appointments")
+@RequiredArgsConstructor
 public class AppointmentController {
 
-    private final AppointmentServiceImpl appointmentService;
+    private final AppointmentService appointmentService;
 
-    public AppointmentController(AppointmentServiceImpl appointmentService) {
-        this.appointmentService = appointmentService;
+    @GetMapping
+    public ResponseEntity<List<AppointmentResponse>> getAllAppointment() {
+        return ResponseEntity.ok(this.appointmentService.getAllAppointments());
     }
 
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Iterable<Appointment>> getAllAppointment() {
-        return ResponseEntity.ok(this.appointmentService.findAll());
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<AppointmentResponse> getById(@PathVariable Long id) {
+        return this.appointmentService.getAppointmentById(id)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new InvalidAppointmentException("The appointment with id \"" + id + "\" does not exist"));
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Appointment> getById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(this.appointmentService.findAppointmentById(id));
-
+    @PostMapping
+    public ResponseEntity<AppointmentResponse> createAppointment(@Valid @RequestBody CreateAppointmentRequest request) {
+        return this.appointmentService.createAppointment(request)
+                .map(appointment -> ResponseEntity.status(HttpStatus.CREATED)
+                        .body(appointment))
+                .orElse(ResponseEntity.badRequest().build());
     }
 
-    // todo : need to fix this error relate to appointment dto class
-//    @PostMapping(path = "/create", produces = MediaType.APPLICATION_JSON_VALUE,
-//            consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Appointment> savePaciente(@RequestBody AppointmentDto appointment) {
-//        return appointmentService.saveAppointment(appointment); "Appointment not created"
-//
-//    }
-//
-//    @PutMapping(value = "/update/{id}",
-//            produces = MediaType.APPLICATION_JSON_VALUE,
-//            consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Appointment> updateAppointment(@RequestBody AppointmentDto appointments,
-//                                                         @PathVariable("id") Long id) {
-//        Optional<Appointment> appointmentOptional = appointmentService.findById(id);
-//        if (appointmentOptional.isPresent()) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        appointments.setId(id);
-//
-//        appointmentService.save(appointments);
-//
-//        return ResponseEntity.ok().build();
-//    "The Appointment with id \"" + id + "\" was not edited"
-//    }
-
-    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteAppointment(@PathVariable("id") Long id) {
-        var appointmentOptional = appointmentService.findAppointmentById(id);
-        if (appointmentOptional.getId().equals(id)) {
-            this.appointmentService.deleteAppointmentById(id);
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
+        boolean deleted = this.appointmentService.deleteAppointment(id);
+        if (deleted) {
             return ResponseEntity.ok("Appointment Deleted Successfully");
         }
         throw new InvalidAppointmentException("The appointment with id \"" + id + "\" does not exist");
     }
 
-
+    public static class InvalidAppointmentException extends RuntimeException {
+        public InvalidAppointmentException(String message) {
+            super(message);
+        }
+    }
 }
-

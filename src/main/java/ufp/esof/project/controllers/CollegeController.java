@@ -1,94 +1,72 @@
 package ufp.esof.project.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ufp.esof.project.models.College;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ufp.esof.project.dto.college.CollegeRequestDTO;
+import ufp.esof.project.dto.college.CollegeResponseDTO;
+import ufp.esof.project.exception.college_exception.CollegeBadRequestException;
+import ufp.esof.project.exception.college_exception.CollegeNotFoundException;
 import ufp.esof.project.services.CollegeService;
 
-import java.util.Optional;
-
+import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/college")
+@RequestMapping("/colleges")
 @RequiredArgsConstructor
 public class CollegeController {
 
     private final CollegeService collegeService;
 
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Iterable<College>> getAllColleges() {
-        return ResponseEntity.ok(this.collegeService.getAllColleges());
+    @GetMapping
+    public ResponseEntity<List<CollegeResponseDTO>> getAllColleges() {
+        return ResponseEntity.ok(collegeService.getAllColleges());
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<College> getCollegeById(@PathVariable("id") Long id) {
-        Optional<College> collegeOptional = this.collegeService.findById(id);
-        if (collegeOptional.isPresent())
-            return ResponseEntity.ok(collegeOptional.get());
-        throw new InvalidCollegeException(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<CollegeResponseDTO> getCollegeById(@PathVariable Long id) {
+        return collegeService.getCollegeById(id)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new CollegeNotFoundException(id));
     }
 
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteCollege(@PathVariable("id") Long id) {
-        Optional<College> optionalCollege = this.collegeService.findById(id);
-        if (optionalCollege.isEmpty())
-            throw new InvalidCollegeException(id);
-
-        if (this.collegeService.deleteById(id))
-            return ResponseEntity.ok("College deleted successfully!");
-        throw new CollegeNotEmptyException(id);
+    @PostMapping
+    public ResponseEntity<CollegeResponseDTO> createCollege(@Valid @RequestBody CollegeRequestDTO request) {
+        return collegeService.createCollege(request)
+                .map(ResponseEntity.status(HttpStatus.CREATED)::body)
+                .orElseThrow(() -> new CollegeBadRequestException(request.getName()));
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<College> createCollege(@RequestBody College college) {
-        Optional<College> optionalCollege = this.collegeService.createCollege(college);
-        if (optionalCollege.isPresent())
-            return ResponseEntity.ok(optionalCollege.get());
-        throw new CollegeNotCreatedException(college.getName());
+    @PutMapping("/{id}")
+    public ResponseEntity<CollegeResponseDTO> updateCollege(
+            @PathVariable Long id,
+            @Valid @RequestBody
+            CollegeRequestDTO request) {
+        return collegeService.updateCollege(id, request)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new CollegeNotFoundException(id));
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<College> editCollege(@PathVariable("id") Long id, @RequestBody College college) {
-        Optional<College> optionalCollege = this.collegeService.findById(id);
-        if (optionalCollege.isEmpty())
-            throw new InvalidCollegeException(id);
-
-        optionalCollege = this.collegeService.editCollege(optionalCollege.get(), college, id);
-        if (optionalCollege.isPresent())
-            return ResponseEntity.ok(optionalCollege.get());
-
-        throw new CollegeNotEditedException(id);
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid College")
-    public static class InvalidCollegeException extends RuntimeException {
-        public InvalidCollegeException(Long id) {
-            super("The college with id " + id + " does not exist");
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCollege(@PathVariable Long id) {
+        try {
+            boolean deleted = collegeService.deleteCollege(id);
+            if (deleted) {
+                return ResponseEntity.noContent().build();
+            }
+            throw new CollegeNotFoundException(id);
+        } catch (CollegeBadRequestException e) {
+            throw new CollegeBadRequestException(id);
         }
     }
 
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "College not created")
-    public static class CollegeNotCreatedException extends RuntimeException {
-        public CollegeNotCreatedException(String name) {
-            super("The college with name \"" + name + "\" was not created");
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "College not edited")
-    public static class CollegeNotEditedException extends RuntimeException {
-        public CollegeNotEditedException(Long id) {
-            super("The college with id \"" + id + "\" was not edited");
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "College not empty")
-    public static class CollegeNotEmptyException extends RuntimeException {
-        public CollegeNotEmptyException(Long id) {
-            super("The college with id \"" + id + "\" has degrees associated. Please delete the degrees before deleting the college.");
-        }
-    }
 }

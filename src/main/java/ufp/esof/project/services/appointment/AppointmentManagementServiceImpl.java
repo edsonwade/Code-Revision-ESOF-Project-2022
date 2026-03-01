@@ -15,7 +15,7 @@ import ufp.esof.project.models.Explainer;
 import ufp.esof.project.models.Student;
 import ufp.esof.project.models.enums.AppointmentStatus;
 import ufp.esof.project.repository.AppointmentRepository;
-import ufp.esof.project.repository.CourseRepo;
+import ufp.esof.project.repository.CourseRepository;
 import ufp.esof.project.repository.ExplainerRepository;
 import ufp.esof.project.repository.StudentRepository;
 
@@ -36,14 +36,14 @@ public class AppointmentManagementServiceImpl implements AppointmentManagementSe
     private final AppointmentRepository appointmentRepository;
     private final StudentRepository studentRepository;
     private final ExplainerRepository explainerRepository;
-    private final CourseRepo courseRepository;
+    private final CourseRepository courseRepository;
     private final AppointmentMapper appointmentMapper;
 
     public AppointmentManagementServiceImpl(
             AppointmentRepository appointmentRepository,
             StudentRepository studentRepository,
             ExplainerRepository explainerRepository,
-            CourseRepo courseRepository,
+            CourseRepository courseRepository,
             AppointmentMapper appointmentMapper) {
         this.appointmentRepository = appointmentRepository;
         this.studentRepository = studentRepository;

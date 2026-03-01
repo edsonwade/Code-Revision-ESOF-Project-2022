@@ -5,6 +5,8 @@ import ufp.esof.project.dto.request.CreateAppointmentRequest;
 import ufp.esof.project.dto.response.AppointmentResponse;
 import ufp.esof.project.models.Appointment;
 
+import static ufp.esof.project.services.AppointmentServiceImpl.getAppointmentResponse;
+
 /**
  * Mapper for converting between Appointment entities and DTOs.
  */
@@ -36,20 +38,7 @@ public class AppointmentMapper {
             return null;
         }
 
-        return AppointmentResponse.builder()
-                .id(appointment.getId())
-                .studentId(appointment.getStudent() != null ? appointment.getStudent().getId() : null)
-                .studentName(appointment.getStudent() != null ? appointment.getStudent().getName() : null)
-                .explainerId(appointment.getExplainer() != null ? appointment.getExplainer().getId() : null)
-                .explainerName(appointment.getExplainer() != null ? appointment.getExplainer().getName() : null)
-                .courseId(appointment.getCourse() != null ? appointment.getCourse().getId() : null)
-                .courseName(appointment.getCourse() != null ? appointment.getCourse().getName() : null)
-                .startTime(appointment.getStartTime())
-                .endTime(appointment.getExpectedEndTime())
-                .status(appointment.getStatus())
-                .createdAt(appointment.getCreatedAt())
-                .updatedAt(appointment.getUpdatedAt())
-                .build();
+        return getAppointmentResponse(appointment);
     }
 }
 

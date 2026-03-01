@@ -85,3 +85,12 @@ build/
 
 ### Maven ###
 **/target/
+
+
+### Agents ###
+GEMINI.md
+*GEMINI.md
+/GEMINI.md
+RUNNING.md
+*RUNNING.md
+/RUNNING.md
