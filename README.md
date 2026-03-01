@@ -1,6 +1,4 @@
 # 🎓 University Management System — Premium Enterprise  🚀
-
-[![High grade Style Verification](https://img.shields.io/badge/Scale-10/10-indigo?style=for-the-badge&logo=High grade)](./walkthrough.md)
 [![Build Status](https://img.shields.io/badge/Build-Passing-emerald?style=for-the-badge&logo=github-actions)](./walkthrough.md)
 
 Welcome to the **University Management System**,a production-ready Enterprise solution designed to orchestrate academic appointments, student management, and institutional logistics premium experience.
