@@ -30,6 +30,7 @@ endpoints/
 logs/
 *.log
 
+
 ### Ignorar arquivos de ambiente ###
 .env
 *.env
@@ -50,6 +51,7 @@ build/
 
 ###
 /Documents
+Documents/**
 
 
 # Editor-based Rest Client
