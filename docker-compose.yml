@@ -56,6 +56,23 @@ services:
           memory: 1024M
 
 
+  # Frontend application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=http://localhost:8081/api/v1
+    container_name: university-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      university-management-system:
+        condition: service_healthy
+    networks:
+      - university-management-net
+    restart: unless-stopped
+
       # ==================== PostgreSQL ====================
   postgres-primary:
     image: postgres:16-alpine
@@ -131,6 +148,24 @@ services:
       start_period: 10s
     depends_on:
       - postgres-primary
+
+  #====================Flyway Migration ==================
+
+  flyway:
+    image: flyway/flyway
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+    environment:
+      - FLYWAY_URL=jdbc:postgresql://postgres-primary:5432/university_db
+      - FLYWAY_USER=postgres
+      - FLYWAY_PASSWORD=postgres
+      - FLYWAY_LOCATIONS=filesystem:/flyway/sql
+    volumes:
+      - ./db/migration:/flyway/sql
+    command: migrate
+    networks:
+      - university-management-net
 
 
   # ==================== MongoDB (Single-node Replica Set, no keyfile) ====================

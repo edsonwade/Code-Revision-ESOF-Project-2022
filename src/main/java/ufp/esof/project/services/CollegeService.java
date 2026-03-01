@@ -4,7 +4,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ufp.esof.project.dto.CollegeRequestDTO;
+import ufp.esof.project.dto.college.CollegeRequestDTO;
 import ufp.esof.project.dto.college.CollegeResponseDTO;
 import ufp.esof.project.models.College;
 import ufp.esof.project.models.Degree;

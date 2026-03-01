@@ -10,7 +10,6 @@ import java.util.Optional;
 @SuppressWarnings("all")
 public interface ExplainerRepository extends JpaRepository<Explainer, Long> {
     Optional<Explainer> findByName(String name);
-
     Optional<Explainer> findExplainerByEmail(String email);
-    Optional<Explainer> findByExplainerById(Long id);
+
 }

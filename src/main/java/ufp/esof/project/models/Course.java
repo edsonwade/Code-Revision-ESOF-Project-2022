@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ufp.esof.project.models.base.AuditableEntity;
 
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;

@@ -1,7 +1,8 @@
 package ufp.esof.project.services;
 
 
-import ufp.esof.project.dto.CollegeRequestDTO;
+
+import ufp.esof.project.dto.college.CollegeRequestDTO;
 import ufp.esof.project.dto.college.CollegeResponseDTO;
 
 import java.util.List;

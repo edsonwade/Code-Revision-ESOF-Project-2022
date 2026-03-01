@@ -16,7 +16,7 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 
 # Build the application with production profile
-RUN mvn clean package -DskipTests
+RUN mvn -B clean package -DskipTests=true
 
 # ===================================================================
 # Stage 2: Runtime Stage
