@@ -1,9 +1,0 @@
-Notas:
-
-- Student -> aluno
-- Explainer -> Explicador
-- Course -> Cadeira
-- Appointment -> Atendimento
-- Availability -> Disponibilidade
-- Degree -> Curso
-- College -> Faculdade
