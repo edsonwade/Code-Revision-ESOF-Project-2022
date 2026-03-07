@@ -25,7 +25,16 @@ export function CreateStudentForm({ onSuccess, onCancel }: CreateStudentFormProp
   });
 
   const onSubmit = (data: CreateStudentFormData) => {
-    mutation.mutate(data, {
+    // Explicitly construct the payload to satisfy exactOptionalPropertyTypes
+    const payload: Omit<CreateStudentFormData, 'phone'> & { phone?: string } = {
+      name: data.name,
+      email: data.email,
+    };
+    if (data.phone) {
+      payload.phone = data.phone;
+    }
+
+    mutation.mutate(payload, {
       onSuccess: () => onSuccess(),
       onError: (err) => {
         const validationErrors = parseValidationErrors(err);
@@ -53,9 +62,9 @@ export function CreateStudentForm({ onSuccess, onCancel }: CreateStudentFormProp
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="studentNumber">Student Number</Label>
-        <Input id="studentNumber" placeholder="UP123456" {...register('studentNumber')} />
-        {errors.studentNumber && <p className="text-xs text-[#F87171]">{errors.studentNumber.message}</p>}
+        <Label htmlFor="phone">Phone (optional)</Label>
+        <Input id="phone" placeholder="+351 912 345 678" {...register('phone')} />
+        {errors.phone && <p className="text-xs text-[#F87171]">{errors.phone.message}</p>}
       </div>
 
       {mutation.isError && !parseValidationErrors(mutation.error) && (

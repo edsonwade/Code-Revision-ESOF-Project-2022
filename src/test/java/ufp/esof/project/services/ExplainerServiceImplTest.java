@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ExplainerServiceImpl Tests")
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 class ExplainerServiceImplTest {
 
     @Mock

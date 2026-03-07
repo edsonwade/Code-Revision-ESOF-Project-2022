@@ -1,6 +1,7 @@
 import type { AuditableEntity } from '@shared/types/common.types';
 
 // Synchronized with: ufp.esof.project.models.enums.AppointmentStatus
+// Last verified: 2026-03-07
 export const APPOINTMENT_STATUS = {
   SCHEDULED: 'SCHEDULED',
   COMPLETED: 'COMPLETED',
@@ -18,29 +19,28 @@ export const canBeCancelled = (s: AppointmentStatus): boolean =>
 export const isFinalState = (s: AppointmentStatus): boolean =>
   ['COMPLETED', 'CANCELLED', 'NO_SHOW'].includes(s);
 
+// Synchronized with: ufp.esof.project.dto.response.AppointmentResponse
+// Last verified: 2026-03-07
 export interface AppointmentDto extends AuditableEntity {
   id: number;
-  studentId: number;
-  explainerId: number;
-  scheduledAt: string;
+  studentId: number | null;
+  studentName: string | null;
+  explainerId: number | null;
+  explainerName: string | null;
+  courseId: number | null;
+  courseName: string | null;
+  startTime: string;
+  endTime: string;
   status: AppointmentStatus;
-  notes?: string;
-  organizationId: number;
 }
 
+// Synchronized with: ufp.esof.project.dto.request.CreateAppointmentRequest
+// Fields: studentId (@NotNull @Positive), explainerId (@NotNull @Positive),
+//         courseId (@NotNull @Positive), startTime (@NotNull @Future), endTime (@NotNull @Future)
 export interface CreateAppointmentRequest {
   studentId: number;
   explainerId: number;
-  scheduledAt: string;
-  notes?: string;
-  organizationId?: number;
-}
-
-export interface AppointmentResponse {
-  id: number;
-  studentName: string;
-  explainerName: string;
-  scheduledAt: string;
-  status: AppointmentStatus;
-  notes?: string;
+  courseId: number;
+  startTime: string;
+  endTime: string;
 }

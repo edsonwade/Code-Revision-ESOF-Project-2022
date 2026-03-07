@@ -1,7 +1,8 @@
-import { Search, Bell, User } from 'lucide-react';
+import { Search, Bell, User, LogOut } from 'lucide-react';
 import { Button } from '@shared/components/ui/button';
 import { Input } from '@shared/components/ui/input';
 import { useAuthStore } from '@shared/store/authStore';
+import { useLogout } from '@features/auth/useLogout';
 
 interface TopBarProps {
   onSearch?: (q: string) => void;
@@ -10,6 +11,7 @@ interface TopBarProps {
 export function TopBar({ onSearch }: TopBarProps) {
   const user = useAuthStore((s) => s.user);
   const skipAuth = import.meta.env['VITE_SKIP_AUTH'] === 'true';
+  const logout = useLogout();
 
   return (
     <header className="flex h-14 items-center justify-between border-b border-[#1E2438] bg-[#0D0F18]/80 backdrop-blur-sm px-4 gap-4 flex-shrink-0">
@@ -36,15 +38,25 @@ export function TopBar({ onSearch }: TopBarProps) {
             <User className="h-3.5 w-3.5 text-white" />
           </div>
           {(user || skipAuth) && (
-            <div className="hidden sm:block">
-              <div className="text-xs font-medium text-[#F1F5F9] leading-tight">
-                {user?.name ?? 'Developer'}
+            <div className="hidden sm:block mr-2">
+              <div className="text-xs font-medium text-[#F1F5F9] leading-tight flex items-center gap-1.5">
+                {user?.email ?? 'Developer'}
               </div>
               <div className="text-[10px] text-[#475569] leading-tight">
                 {user?.role ?? 'DEV MODE'}
               </div>
             </div>
           )}
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 text-[#94A3B8] hover:text-[#5B8AF5] hover:bg-[#1A1E2E]"
+            onClick={() => logout.mutate()}
+            title="Sign out"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+          </Button>
         </div>
       </div>
     </header>

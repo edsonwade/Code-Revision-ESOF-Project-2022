@@ -27,8 +27,7 @@ export function StudentListPage() {
   const filtered = students?.filter((s) =>
     debouncedSearch
       ? s.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-        s.email.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-        s.studentNumber.toLowerCase().includes(debouncedSearch.toLowerCase())
+      s.email.toLowerCase().includes(debouncedSearch.toLowerCase())
       : true
   ) ?? [];
 
@@ -38,7 +37,7 @@ export function StudentListPage() {
       header: 'Student',
       accessorFn: (row) => row.name,
       cell: ({ row }) => (
-        <StudentBadge name={row.original.name} studentNumber={row.original.studentNumber} />
+        <StudentBadge name={row.original.name} email={row.original.email} />
       ),
     },
     {

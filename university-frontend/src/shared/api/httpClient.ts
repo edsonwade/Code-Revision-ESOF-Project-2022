@@ -14,7 +14,7 @@ const httpClient = axios.create({
 // Request interceptor: attach auth + tenant headers
 httpClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const token = useAuthStore.getState().token;
+    const token = useAuthStore.getState().accessToken;
     const organizationId = useTenantStore.getState().organizationId
       ?? import.meta.env['VITE_DEFAULT_ORG_ID']
       ?? '1';

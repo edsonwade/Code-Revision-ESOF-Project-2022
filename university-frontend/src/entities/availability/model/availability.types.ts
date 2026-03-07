@@ -1,10 +1,19 @@
 import type { AuditableEntity } from '@shared/types/common.types';
+
+// Synchronized with: ufp.esof.project.dto.availability.AvailabilityResponseDTO
+// Last verified: 2026-03-07
 export interface AvailabilityDto extends AuditableEntity {
   id: number;
-  explainerId: number;
-  dayOfWeek: string;
+  explainerId: number | null;
+  explainerName: string | null;
   startTime: string;
   endTime: string;
-  organizationId: number;
 }
-export interface CreateAvailabilityRequest { explainerId: number; dayOfWeek: string; startTime: string; endTime: string; organizationId?: number; }
+
+// Synchronized with: ufp.esof.project.dto.availability.AvailabilityRequestDTO
+// Fields: explainerId (Long), startTime (LocalDateTime), endTime (LocalDateTime)
+export interface CreateAvailabilityRequest {
+  explainerId: number;
+  startTime: string;
+  endTime: string;
+}

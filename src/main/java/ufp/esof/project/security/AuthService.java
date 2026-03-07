@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class AuthService {
 
     private final UserRepository userRepository;

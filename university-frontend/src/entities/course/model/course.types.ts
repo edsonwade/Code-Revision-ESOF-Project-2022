@@ -1,9 +1,17 @@
 import type { AuditableEntity } from '@shared/types/common.types';
+
+// Synchronized with: ufp.esof.project.dto.course.CourseResponseDTO
+// Last verified: 2026-03-07
 export interface Course extends AuditableEntity {
   id: number;
   name: string;
-  code: string;
-  collegeId?: number;
-  organizationId: number;
+  degreeId: number | null;
+  degreeName: string | null;
 }
-export interface CreateCourseRequest { name: string; code: string; collegeId?: number; organizationId?: number; }
+
+// Synchronized with: ufp.esof.project.dto.course.CourseRequestDTO
+// Fields: name (@NotBlank), degreeId (optional Long)
+export interface CreateCourseRequest {
+  name: string;
+  degreeId?: number;
+}

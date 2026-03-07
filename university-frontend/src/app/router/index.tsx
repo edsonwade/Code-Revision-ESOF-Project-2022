@@ -3,6 +3,7 @@ import { AppShell } from '@widgets/layout/AppShell';
 import { AuthGuard } from './guards/AuthGuard';
 import { ROUTES } from './routes';
 
+import { RegisterPage } from '@pages/auth/RegisterPage';
 import { LoginPage } from '@pages/auth/LoginPage';
 import { DashboardPage } from '@pages/dashboard/DashboardPage';
 import { StudentListPage } from '@pages/students/StudentListPage';
@@ -36,6 +37,7 @@ function NotFoundPage() {
 
 export const router = createBrowserRouter([
   { path: ROUTES.LOGIN, element: <LoginPage /> },
+  { path: ROUTES.REGISTER, element: <RegisterPage /> },
   { path: ROUTES.FORBIDDEN, element: <ForbiddenPage /> },
   {
     element: <AuthGuard />,

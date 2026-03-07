@@ -27,7 +27,7 @@ import java.util.Set;
 @Setter
 @JsonPropertyOrder({"id", "name", "degrees"})
 @Table(name = "colleges")
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class College extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

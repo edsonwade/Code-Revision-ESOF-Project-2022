@@ -9,6 +9,7 @@ import ufp.esof.project.dto.explainer.ExplainerResponseDTO;
 import ufp.esof.project.exception.ExplainerAlreadyExistsException;
 import ufp.esof.project.exception.ExplainerNotFoundException;
 import ufp.esof.project.models.Explainer;
+import ufp.esof.project.models.enums.Role;
 import ufp.esof.project.repository.ExplainerRepository;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class ExplainerServiceImpl implements ExplainerService {
 
     private final ExplainerRepository explainerRepository;
@@ -45,16 +46,20 @@ public class ExplainerServiceImpl implements ExplainerService {
     public ExplainerResponseDTO createExplainer(ExplainerRequestDTO explainerRequestDTO) {
         Optional<Explainer> existingByName = explainerRepository.findByName(explainerRequestDTO.getName());
         if (existingByName.isPresent()) {
-            throw new ExplainerAlreadyExistsException("Explainer with name '" + explainerRequestDTO.getName() + "' already exists");
+            throw new ExplainerAlreadyExistsException(
+                    "Explainer with name '" + explainerRequestDTO.getName() + "' already exists");
         }
         Optional<Explainer> existingByEmail = explainerRepository.findExplainerByEmail(explainerRequestDTO.getEmail());
         if (existingByEmail.isPresent()) {
-            throw new ExplainerAlreadyExistsException("Explainer with email '" + explainerRequestDTO.getEmail() + "' already exists");
+            throw new ExplainerAlreadyExistsException(
+                    "Explainer with email '" + explainerRequestDTO.getEmail() + "' already exists");
         }
 
         Explainer newExplainer = new Explainer();
         newExplainer.setName(explainerRequestDTO.getName());
         newExplainer.setEmail(explainerRequestDTO.getEmail());
+        newExplainer.setOrganizationId(1L);
+        newExplainer.setRole(Role.EXPLAINER);
         Explainer saved = explainerRepository.save(newExplainer);
         return toResponseDTO(saved);
     }
@@ -70,7 +75,6 @@ public class ExplainerServiceImpl implements ExplainerService {
         Explainer saved = explainerRepository.save(explainer);
         return toResponseDTO(saved);
     }
-
 
     @CacheEvict(value = "explainers", allEntries = true)
     @Override
