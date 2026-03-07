@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("CollegeService Tests")
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 class CollegeServiceTest {
 
     @Mock

@@ -24,7 +24,7 @@ export function AppointmentListPage() {
   const filtered = appointments?.filter((a) =>
     debouncedSearch
       ? String(a.id).includes(debouncedSearch) ||
-        String(a.studentId).includes(debouncedSearch)
+      String(a.studentId).includes(debouncedSearch)
       : true
   ) ?? [];
 
@@ -41,13 +41,13 @@ export function AppointmentListPage() {
       header: 'Participants',
       cell: ({ row }) => (
         <div className="space-y-0.5">
-          <div className="text-sm text-[#F1F5F9]">Student #{row.original.studentId}</div>
-          <div className="text-xs text-[#475569]">Explainer #{row.original.explainerId}</div>
+          <div className="text-sm text-[#F1F5F9]">{row.original.studentName || `Student #${row.original.studentId}`}</div>
+          <div className="text-xs text-[#475569]">{row.original.explainerName || `Explainer #${row.original.explainerId}`}</div>
         </div>
       ),
     },
     {
-      accessorKey: 'scheduledAt',
+      accessorKey: 'startTime',
       header: 'Scheduled',
       cell: ({ getValue }) => (
         <div className="flex items-center gap-1.5">

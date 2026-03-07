@@ -1,20 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
-import httpClient from '@shared/api/httpClient';
-import { buildUrl } from '@shared/api/apiConfig';
-import { useAuthStore, type AuthUser } from '@shared/store/authStore';
-import { useTenantStore } from '@shared/store/tenantStore';
-
-interface LoginRequest { email: string; password: string; }
-interface LoginResponse { token: string; user: AuthUser; }
+import { loginApi } from '@entities/auth/api/authApi';
+import type { LoginRequest, AuthResponse } from '@entities/auth/model/auth.types';
+import { useAuthStore } from '@shared/store/authStore';
 
 export function useLogin() {
   const setAuth = useAuthStore((s) => s.setAuth);
-  const setOrgId = useTenantStore((s) => s.setOrganizationId);
+  
   return useMutation({
-    mutationFn: async (credentials: LoginRequest): Promise<LoginResponse> => {
-      const { data } = await httpClient.post<LoginResponse>(buildUrl('/auth/login'), credentials);
-      return data;
+    mutationFn: (credentials: LoginRequest) => loginApi(credentials),
+    onSuccess: (data: AuthResponse) => {
+      setAuth(data);
     },
-    onSuccess: ({ token, user }) => { setAuth(token, user); setOrgId(user.organizationId); },
   });
 }

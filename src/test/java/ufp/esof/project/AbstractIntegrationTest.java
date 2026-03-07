@@ -15,7 +15,7 @@ import org.testcontainers.utility.DockerImageName;
 @ActiveProfiles("test")
 @Testcontainers
 @DisabledIfEnvironmentVariable(named = "CI", matches = "true")
-@SuppressWarnings({"resource", "unused"})
+@SuppressWarnings({"resource", "all"})
 public abstract class AbstractIntegrationTest {
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:16-alpine"))

@@ -3,7 +3,7 @@ import { cn } from '@shared/lib/cn';
 
 interface FormFieldProps {
   label: string;
-  error?: string;
+  error?: string | undefined;
   required?: boolean;
   hint?: string;
   children: ReactNode;

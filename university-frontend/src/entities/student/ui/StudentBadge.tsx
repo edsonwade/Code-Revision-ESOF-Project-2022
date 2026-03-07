@@ -2,10 +2,10 @@ import { User } from 'lucide-react';
 
 interface StudentBadgeProps {
   name: string;
-  studentNumber?: string;
+  email?: string;
 }
 
-export function StudentBadge({ name, studentNumber }: StudentBadgeProps) {
+export function StudentBadge({ name, email }: StudentBadgeProps) {
   const initials = name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase();
   return (
     <div className="flex items-center gap-2.5">
@@ -14,10 +14,11 @@ export function StudentBadge({ name, studentNumber }: StudentBadgeProps) {
       </div>
       <div className="min-w-0">
         <div className="text-sm font-medium text-[#F1F5F9] truncate">{name}</div>
-        {studentNumber && (
-          <div className="text-xs text-[#475569] font-mono">{studentNumber}</div>
+        {email && (
+          <div className="text-xs text-[#475569] font-mono">{email}</div>
         )}
       </div>
     </div>
   );
 }
+

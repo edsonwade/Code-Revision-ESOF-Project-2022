@@ -9,8 +9,7 @@ export function AvailabilityPage() {
   const { data, isLoading } = useAvailability();
 
   const columns: ColumnDef<AvailabilityDto>[] = [
-    { accessorKey: 'explainerId', header: 'Explainer ID', cell: ({ getValue }) => <span className="font-mono text-xs text-[#475569]">#{getValue<number>()}</span> },
-    { accessorKey: 'dayOfWeek', header: 'Day', cell: ({ getValue }) => <span className="text-sm text-[#F1F5F9] font-medium">{getValue<string>()}</span> },
+    { accessorKey: 'explainerName', header: 'Explainer', cell: ({ row }) => <span className="font-medium text-sm text-[#F1F5F9]">{row.original.explainerName || `#${row.original.explainerId}`}</span> },
     {
       id: 'time',
       header: 'Time Slot',
@@ -26,7 +25,7 @@ export function AvailabilityPage() {
   return (
     <div className="animate-fade-in space-y-4">
       <PageHeader title="Availability" description={`${data?.length ?? 0} time slots configured`} />
-      <DataTable data={data ?? []} columns={columns} isLoading={isLoading} emptyMessage="No availability slots configured." />
+      <DataTable data={(data as AvailabilityDto[]) ?? []} columns={columns} isLoading={isLoading} emptyMessage="No availability slots configured." />
     </div>
   );
 }

@@ -1,6 +1,9 @@
 spring:
   application:
     name: university-application
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
 
   # Server Configuration
   servlet:

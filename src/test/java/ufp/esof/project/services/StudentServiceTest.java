@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("StudentService Tests")
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 class StudentServiceTest {
     @Mock
     private StudentRepository studentRepository;

@@ -22,7 +22,6 @@ export function DegreesPage() {
         </div>
       ),
     },
-    { accessorKey: 'acronym', header: 'Acronym', cell: ({ getValue }) => <Badge variant="violet">{getValue<string>()}</Badge> },
   ];
   return (
     <div className="animate-fade-in space-y-4">

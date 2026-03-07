@@ -3,21 +3,21 @@ import { buildUrl } from '@shared/api/apiConfig';
 import type { AppointmentDto, CreateAppointmentRequest } from '../model/appointment.types';
 
 export async function getAppointments(): Promise<AppointmentDto[]> {
-  const { data } = await httpClient.get<AppointmentDto[]>(buildUrl('/appointment'));
+  const { data } = await httpClient.get<AppointmentDto[]>(buildUrl('/appointments'));
   return data;
 }
 
 export async function getAppointmentById(id: number): Promise<AppointmentDto> {
-  const { data } = await httpClient.get<AppointmentDto>(buildUrl(`/appointment/${id}`));
+  const { data } = await httpClient.get<AppointmentDto>(buildUrl(`/appointments/${id}`));
   return data;
 }
 
 export async function createAppointment(body: CreateAppointmentRequest): Promise<AppointmentDto> {
-  const { data } = await httpClient.post<AppointmentDto>(buildUrl('/appointment'), body);
+  const { data } = await httpClient.post<AppointmentDto>(buildUrl('/appointments'), body);
   return data;
 }
 
 export async function deleteAppointment(id: number): Promise<string> {
-  const { data } = await httpClient.delete<string>(buildUrl(`/appointment/delete/${id}`));
+  const { data } = await httpClient.delete<string>(buildUrl(`/appointments/${id}`));
   return data;
 }

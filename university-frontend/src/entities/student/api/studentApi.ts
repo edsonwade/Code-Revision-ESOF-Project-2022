@@ -12,15 +12,15 @@ export async function getStudentById(id: number): Promise<Student> {
   return data;
 }
 
-export async function searchStudentsByName(name: string): Promise<Student[]> {
-  const { data } = await httpClient.get<Student[]>(
+export async function searchStudentsByName(name: string): Promise<Student> {
+  const { data } = await httpClient.get<Student>(
     buildUrl(`/students/search?name=${encodeURIComponent(name)}`)
   );
   return data;
 }
 
 export async function createStudent(body: CreateStudentRequest): Promise<Student> {
-  const { data } = await httpClient.post<Student>(buildUrl('/students'), body);
+  const { data } = await httpClient.post<Student>(buildUrl('/students/create'), body);
   return data;
 }
 

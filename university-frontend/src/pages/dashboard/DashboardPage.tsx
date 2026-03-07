@@ -17,7 +17,7 @@ function StatCard({
   color,
   isLoading,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string | undefined; style?: React.CSSProperties | undefined }>;
   label: string;
   value: number | string;
   sub?: string;
@@ -157,7 +157,7 @@ export function DashboardPage() {
                       <p className="text-sm text-[#F1F5F9] truncate">
                         Appointment #{appt.id}
                       </p>
-                      <p className="text-xs text-[#475569]">{formatDate(appt.scheduledAt)}</p>
+                      <p className="text-xs text-[#475569]">{formatDate(appt.startTime)}</p>
                     </div>
                   </div>
                   <StatusBadge status={appt.status} />

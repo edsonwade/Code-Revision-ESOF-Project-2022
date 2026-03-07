@@ -4,10 +4,11 @@ import './index.css';
 import { App } from './app/App';
 
 function validateEnv(): void {
+  // Relaxed requirement to allow relative path proxying via Nginx without throwing.
   const required = ['VITE_API_BASE_URL'];
   const missing = required.filter((key) => !import.meta.env[key]);
   if (missing.length > 0 && import.meta.env.PROD) {
-    throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
+    console.warn(`Optional environment variables missing: ${missing.join(', ')}`);
   }
 }
 

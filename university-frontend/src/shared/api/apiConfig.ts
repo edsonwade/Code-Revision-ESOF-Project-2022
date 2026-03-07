@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  baseURL: import.meta.env['VITE_API_BASE_URL'] ?? 'http://localhost:8080',
+  baseURL: import.meta.env.VITE_API_BASE_URL || '',
   prefix: '/api/v1',
   timeout: 15000,
 } as const;

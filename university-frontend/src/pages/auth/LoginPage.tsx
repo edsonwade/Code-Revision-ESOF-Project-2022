@@ -1,23 +1,40 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { GraduationCap, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useLogin } from '@features/auth/useLogin';
 import { ROUTES } from '@app/router/routes';
 import { parseError } from '@shared/lib/errorParser';
 import { Button } from '@shared/components/ui/button';
 import { Input } from '@shared/components/ui/input';
-import { Label } from '@shared/components/ui/label';
+import { FormField } from '@shared/components/FormField/FormField';
+import { loginSchema, type LoginFormData } from '@entities/auth/model/auth.schema';
 
 export function LoginPage() {
   const navigate = useNavigate();
   const loginMutation = useLogin();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    loginMutation.mutate({ email, password }, { onSuccess: () => navigate(ROUTES.DASHBOARD) });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
+  });
+
+  const onSubmit = (data: LoginFormData) => {
+    loginMutation.mutate(
+      {
+        email: data.email,
+        password: data.password,
+        ipAddress: '127.0.0.1',
+        userAgent: navigator.userAgent
+      },
+      { onSuccess: () => navigate(ROUTES.DASHBOARD) }
+    );
   };
 
   const isDevMode = import.meta.env['VITE_SKIP_AUTH'] === 'true';
@@ -79,21 +96,23 @@ export function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <FormField label="Email" error={errors.email?.message} required>
               <Input
                 id="email" type="email" placeholder="you@university.edu"
-                value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email"
+                className={errors.email ? 'border-red-500/50 focus-visible:ring-red-500/50' : ''}
+                autoComplete="email"
+                {...register('email')}
               />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
+            </FormField>
+
+            <FormField label="Password" error={errors.password?.message} required>
               <div className="relative">
                 <Input
                   id="password" type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••" value={password}
-                  onChange={(e) => setPassword(e.target.value)} className="pr-10"
+                  placeholder="••••••••"
+                  className={`pr-10 ${errors.password ? 'border-red-500/50 focus-visible:ring-red-500/50' : ''}`}
+                  {...register('password')}
                 />
                 <button
                   type="button" onClick={() => setShowPassword((s) => !s)}
@@ -102,7 +121,7 @@ export function LoginPage() {
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-            </div>
+            </FormField>
 
             {loginMutation.isError && (
               <div className="flex items-center gap-2 rounded-lg bg-[#F87171]/10 border border-[#F87171]/20 px-3 py-2.5 text-sm text-[#F87171]">
@@ -116,8 +135,14 @@ export function LoginPage() {
             </Button>
           </form>
 
-          <p className="mt-6 text-center text-xs text-[#475569]">
-            Authentication managed by your administrator
+          <p className="mt-6 text-center text-sm text-[#94A3B8]">
+            Don't have an account?{' '}
+            <button
+              onClick={() => navigate(ROUTES.REGISTER)}
+              className="text-[#5B8AF5] hover:text-[#7C9FF7] underline"
+            >
+              Register
+            </button>
           </p>
         </div>
       </div>

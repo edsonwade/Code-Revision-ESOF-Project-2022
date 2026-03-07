@@ -16,6 +16,7 @@ import ufp.esof.project.dto.student.StudentResponseDTO;
 import ufp.esof.project.exception.DuplicateStudentException;
 import ufp.esof.project.exception.StudentNotFoundException;
 import ufp.esof.project.models.Student;
+import ufp.esof.project.models.enums.Role;
 import ufp.esof.project.repository.StudentRepository;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class StudentService {
 
     private final StudentRepository studentRepository;
@@ -64,6 +65,8 @@ public class StudentService {
         var student = new Student();
         student.setName(studentRequestDTO.getName());
         student.setEmail(studentRequestDTO.getEmail());
+        student.setOrganizationId(1L);
+        student.setRole(Role.STUDENT);
         student = studentRepository.save(student);
         return toResponseDTO(student);
     }
@@ -77,7 +80,8 @@ public class StudentService {
         if (studentRepository.findByName(studentRequestDTO.getName())
                 .filter(s -> !s.getId().equals(id))
                 .isPresent()) {
-            throw new DuplicateStudentException("Another student with name '" + studentRequestDTO.getName() + "' already exists");
+            throw new DuplicateStudentException(
+                    "Another student with name '" + studentRequestDTO.getName() + "' already exists");
         }
 
         existingStudent.setName(studentRequestDTO.getName());
